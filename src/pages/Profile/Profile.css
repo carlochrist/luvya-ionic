@@ -1,0 +1,65 @@
+.profile {
+  text-align: center;
+  border: solid 10px black;
+}
+
+.Slider {
+  /* object-fit: contain; */
+}
+
+.profile__picture {
+  /* position: relative;
+  width: 600px;
+  padding: 20px;
+  max-width: 85vw;
+  height: 50vw;
+  border-radius: 20px;
+  background-size: cover;
+  background-position: center;
+  box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3); */
+  /* display: flex;
+  object-fit: contain; */
+  width: 300px;
+}
+
+/* .card > h3 {
+    position: absolute;
+    bottom: 10px;
+    color: white;
+  } */
+
+.profile__pictureContainer {
+  /* display: flex; */
+  /* justify-content: center;
+  margin-top: 5vh; */
+}
+
+.swipe {
+  position: absolute;
+}
+
+.slides .slick-prev,
+.slides .slick-next {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+}
+
+.slides {
+  position: relative;
+}
+
+.slides .slick-prev,
+.slides .slick-next {
+  position: absolute;
+  top: 50%;
+  z-index: 1;
+}
+
+.slides .slick-prev {
+  left: 5%;
+}
+
+.slides .slick-next {
+  right: 5%;
+}
