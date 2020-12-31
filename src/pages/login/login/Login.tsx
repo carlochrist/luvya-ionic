@@ -12,18 +12,24 @@ import {
 import "./Login.css";
 import { loginUser } from "../../../firebaseConfig";
 import { toast } from "../../../toast";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
+import { setUserState } from "../../../redux/actions";
+import { useDispatch } from "react-redux";
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
   const [busy, setBusy] = useState<boolean>(false);
+  const history = useHistory();
+  const dispatch = useDispatch();
 
   async function login() {
     setBusy(true);
-    const res = await loginUser(username, password);
+    const res: any = await loginUser(username, password);
 
     if (res) {
+      dispatch(setUserState(res.user.email));
+      history.replace("/main");
       toast("You are loggeed in!", 3000);
     }
     setBusy(false);

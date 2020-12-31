@@ -1,65 +1,66 @@
-.profile {
-  text-align: center;
-  border: solid 10px black;
-}
-
-.Slider {
-  /* object-fit: contain; */
-}
-
-.profile__picture {
-  /* position: relative;
+.card {
+  position: relative;
+  /* position: absolute; */
   width: 600px;
   padding: 20px;
   max-width: 85vw;
-  height: 50vw;
+  height: 45vw;
   border-radius: 20px;
   background-size: cover;
   background-position: center;
-  box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3); */
-  /* display: flex;
-  object-fit: contain; */
-  width: 300px;
+  box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3);
 }
 
-/* .card > h3 {
-    position: absolute;
-    bottom: 10px;
-    color: white;
-  } */
+.card > h3 {
+  position: absolute;
+  bottom: 10px;
+  color: white;
+}
 
-.profile__pictureContainer {
-  /* display: flex; */
-  /* justify-content: center;
-  margin-top: 5vh; */
+.imagelol {
+  object-fit: contain;
+  display: flex;
+  justify-content: center;
+}
+
+.matchGame__outerCardContainer {
+  /* object-fit: contain; */
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
+
+  /* display: flex;
+  align-items: center;
+  justify-content: center; */
+
+  /* display: flex;
+  justify-content: center;
+  border-bottom: 1px solid #f9f9f9;
+  align-items: center; */
+}
+
+.matchGame__innerCardContainer {
+  /* object-fit: contain; */
+  display: flex;
+  justify-content: center;
+  margin-top: 5vh;
 }
 
 .swipe {
-  position: absolute;
+  /* position: absolute; */
 }
 
-.slides .slick-prev,
-.slides .slick-next {
-  position: absolute;
+matchgame__match {
+  display: flex;
+  flex-direction: column;
+
   top: 50%;
-  z-index: 1;
-}
-
-.slides {
-  position: relative;
-}
-
-.slides .slick-prev,
-.slides .slick-next {
-  position: absolute;
-  top: 50%;
-  z-index: 1;
-}
-
-.slides .slick-prev {
-  left: 5%;
-}
-
-.slides .slick-next {
-  right: 5%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  position: "absolute";
+  width: 400;
+  /* backgroundColor: theme.palette.background.paper, */
+  /* border: "2px solid #000"; */
+  /* boxShadow: theme.shadows[5]; */
+  /* padding: theme.spacing(2, 4, 3) */
 }
