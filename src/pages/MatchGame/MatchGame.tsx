@@ -19,13 +19,6 @@ const MatchGame: React.FC = () => {
   const history = useHistory();
   const [busy, setBusy] = useState(false);
 
-  async function logout() {
-    setBusy(true);
-    await logoutUser();
-    history.replace("/");
-    setBusy(false);
-  }
-
   return (
     <IonPage>
       lol

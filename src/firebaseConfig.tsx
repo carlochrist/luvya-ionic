@@ -41,6 +41,7 @@ export async function loginUser(username: string, password: string) {
     const res = await firebase.default
       .auth()
       .signInWithEmailAndPassword(email, password);
+    // console.log(res);
     return res;
   } catch (error) {
     toast(error.message, 4000);
@@ -48,13 +49,26 @@ export async function loginUser(username: string, password: string) {
   }
 }
 
-export async function registerUser(username: string, password: string) {
+export async function registerUser(
+  username: string,
+  password: string,
+  gender: string
+) {
   const email = `${username}@luvya.com`;
 
   try {
     const res = await firebase.default
       .auth()
-      .createUserWithEmailAndPassword(email, password);
+      .createUserWithEmailAndPassword(email, password)
+      .then(() => {
+        database.collection("users").add({
+          email: email,
+          username: "",
+          gender: gender,
+          lookingFor: "",
+          hereFor: [],
+        });
+      });
     console.log(res);
     return true;
   } catch (error) {
@@ -161,15 +175,37 @@ function FirebaseFileUploadApi(): [
             setIsLoading(false);
 
             // need to get the url to download the file
-            let downloadUrl = await uploadTask.snapshot.ref.getDownloadURL();
-            console.log(downloadUrl);
-
+            let downloadUrl = await uploadTask.snapshot.ref
+              .getDownloadURL()
+              .then((url) => {
+                getCurrentUser().then((user: any) => {
+                  if (user) {
+                    database.collection("users").onSnapshot((snapshot) => {
+                      snapshot.forEach((doc) => {
+                        const currentUser = doc.data();
+                        if (user.email === currentUser["email"]) {
+                          // post image inside db
+                          database
+                            .collection("users")
+                            .doc(doc.id)
+                            .collection("pictures")
+                            .add({
+                              timestamp: firebase.default.firestore.FieldValue.serverTimestamp(),
+                              imageUrl: url,
+                              // caption: caption
+                            });
+                        }
+                      });
+                    });
+                  } else {
+                  }
+                });
+              });
             // set the data when upload has completed
             setDataResponse({
               metaData: uploadTask.snapshot.metadata,
               downloadUrl,
             });
-
             // reset progress
             setProgress(null);
           }
@@ -181,7 +217,6 @@ function FirebaseFileUploadApi(): [
         console.log("CATCH");
       }
     };
-
     fileData && uploadData();
   }, [fileData]);
 

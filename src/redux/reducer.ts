@@ -11,11 +11,22 @@ export default function reducer(
             case 'SET_USER_STATE': 
             return {
                 ...state,
-                user: {
-                    username: payload.split('@')[0]
-                }
+    user: {
+        id: payload.id,
+        email: payload.email.split('@')[0],
+        username: payload.username,
+        gender: payload.gender,
+        hereFor: payload.hereFor,
+        lookingFor: payload.lookingFor,
+    }
             }
         }
 
         return state;
     }
+
+
+
+    // user: {
+    //     username: payload.split('@')[0]
+    // }

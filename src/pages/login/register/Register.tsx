@@ -4,21 +4,28 @@ import {
   IonContent,
   IonHeader,
   IonInput,
+  IonItem,
+  IonLabel,
+  IonListHeader,
   IonLoading,
   IonPage,
+  IonRadio,
+  IonRadioGroup,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import "./Register.css";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { toast } from "../../../toast";
 import { registerUser } from "../../../firebaseConfig";
 
 const Register: React.FC = () => {
   const [username, setUsername] = useState("");
+  const [gender, setGender] = useState("");
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
   const [busy, setBusy] = useState<boolean>(false);
+  const history = useHistory();
 
   async function register() {
     setBusy(true);
@@ -31,12 +38,14 @@ const Register: React.FC = () => {
       return toast("Username and password are required");
     }
 
-    const res = await registerUser(username, password);
+    const res = await registerUser(username, password, gender);
 
     setBusy(false);
     if (res) {
       toast("You have registered successfully!");
     }
+
+    history.replace("/login");
   }
 
   //   useEffect(() => {
@@ -62,6 +71,27 @@ const Register: React.FC = () => {
           placeholder="Username"
           onIonChange={(e: any) => setUsername(e.target.value)}
         ></IonInput>
+        <IonRadioGroup>
+          <IonListHeader>
+            <IonLabel>Gender</IonLabel>
+          </IonListHeader>
+          <IonItem>
+            <IonLabel>Male</IonLabel>
+            <IonRadio
+              slot="start"
+              value="male"
+              onClick={(e: any) => setGender(e.target.value)}
+            ></IonRadio>
+          </IonItem>
+          <IonItem>
+            <IonLabel>Female</IonLabel>
+            <IonRadio
+              slot="start"
+              value="female"
+              onClick={(e: any) => setGender(e.target.value)}
+            ></IonRadio>
+          </IonItem>
+        </IonRadioGroup>
         <IonInput
           type="password"
           placeholder="Password"

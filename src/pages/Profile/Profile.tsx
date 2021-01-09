@@ -2,19 +2,33 @@ import React, { useEffect, useState } from "react";
 import {
   IonButton,
   IonCard,
+  IonCheckbox,
+  IonCol,
   IonContent,
   IonHeader,
   IonInput,
+  IonItem,
+  IonLabel,
+  IonList,
+  IonListHeader,
   IonLoading,
   IonPage,
   IonProgressBar,
+  IonRadio,
+  IonRadioGroup,
+  IonRow,
   IonTitle,
   IonToast,
   IonToolbar,
 } from "@ionic/react";
 import "./Profile.css";
-import { useSelector } from "react-redux";
-import { storage, getCurrentUser, logoutUser } from "../../firebaseConfig";
+import { useDispatch, useSelector } from "react-redux";
+import {
+  storage,
+  getCurrentUser,
+  logoutUser,
+  database,
+} from "../../firebaseConfig";
 import { useHistory } from "react-router";
 import ExploreContainer from "../../components/ExploreContainer";
 import ImageUpload from "./ImageUpload/ImageUpload";
@@ -23,12 +37,28 @@ import firebaseConfig from "../../firebaseConfig";
 import { CameraResultType } from "@capacitor/core";
 import { useCamera, availableFeatures } from "@ionic/react-hooks/camera";
 import { defineCustomElements } from "@ionic/pwa-elements/loader";
+import { setUserState } from "../../redux/actions";
 
 const Profile: React.FC = () => {
   const username = useSelector((state: any) => state.user.username);
   const history = useHistory();
   const [busy, setBusy] = useState(false);
-  const [user, setUser] = useState(getCurrentUser());
+  // const [user, setUser] = useState(getCurrentUser());
+  const [checked, setChecked] = useState(false);
+  const dispatch = useDispatch();
+
+  const user = useSelector((state: any) => state.user);
+
+  // const [didMount, setDidMount] = useState(false);
+
+  // useEffect(() => {
+  //   setDidMount(true);
+  //   return () => setDidMount(false);
+  // }, []);
+
+  // if (!didMount) {
+  //   return null;
+  // }
 
   async function logout() {
     setBusy(true);
@@ -60,11 +90,34 @@ const Profile: React.FC = () => {
         allowEditing: false,
         resultType: CameraResultType.DataUrl,
       });
+      console.log(photo);
     }
+
+    // database
+    //   .collection("users")
+    //   .doc(doc.id)
+    //   .collection("pictures")
+    //   .onSnapshot((snapshot) => {
+    //     setPictures(snapshot.docs.map((doc) => doc.data()));
+    //   });
+
+    //   database.collection("users")
+    //   .doc(user.id)
+    //   .collection("pictures")
+    //   .set(
+    //     {
+
+    //       gender: user.gender,
+    //       lookingFor: user.lookingFor,
+    //       hereFor: user.hereFor,
+    //     },
+    //     { merge: true }
+    //   );
   };
 
   const log = () => {
     console.log(photo);
+    console.log(user);
   };
 
   const upload = () => {
@@ -78,6 +131,93 @@ const Profile: React.FC = () => {
   useEffect(() => {
     setFileData(photo);
   }, [photo, setFileData]);
+
+  // useEffect(() => {
+  //   getCurrentUser().then((user: any) => {
+  //     // setUser(user);
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    if (Object.keys(user).length === 0) {
+      console.log(user);
+      // history.replace("/login");
+    }
+  }, []);
+
+  useEffect(() => {
+    if (user === undefined) {
+      return;
+    } else {
+      // do stuff
+      // database.collection("users").doc(user.id).set(
+      //   {
+      //     gender: user.gender,
+      //     lookingFor: user.lookingFor,
+      //     hereFor: user.hereFor,
+      //   },
+      //   { merge: true }
+      // );
+    }
+  }, [user]);
+
+  const checkIfChecked = (hereFor: string) => {
+    let checked = false;
+    if (user !== null) {
+      // console.log("CHECK x3");
+      // console.log(user);
+      checked = user.hereFor.indexOf(hereFor) !== -1 ? true : false;
+    }
+    return checked;
+  };
+
+  const checkPropertyValue = (property: string, value: string) => {
+    return user[property] === value ? true : false;
+  };
+
+  const updateUserData = (event: any) => {
+    // // object-destructuring
+    const { name, value, checked } = event.target;
+
+    // console.log(event);
+    // console.log(event.target);
+    // console.log(event.detail);
+    // console.log(name);
+    // console.log(value);
+
+    // check if ion-input
+    if (name.startsWith("ion-input")) {
+      user.username = value;
+    }
+
+    // check if radio (looking for)
+    if (name.startsWith("ion-rb")) {
+      user.lookingFor = value;
+    }
+
+    // check if checkbox (hereFor)
+    if (name.startsWith("ion-cb")) {
+      if (user.hereFor.indexOf(value) !== -1) {
+        user.hereFor.splice(user.hereFor.indexOf(value), 1);
+      } else {
+        user.hereFor.push(value);
+      }
+    }
+
+    // dispatch(setUserState(user));
+
+    console.log(user);
+
+    database.collection("users").doc(user.id).set(
+      {
+        gender: user.gender,
+        lookingFor: user.lookingFor,
+        hereFor: user.hereFor,
+        username: user.username,
+      },
+      { merge: true }
+    );
+  };
 
   return (
     <IonPage>
@@ -121,6 +261,94 @@ const Profile: React.FC = () => {
           ]}
         />
 
+        <form>
+          <IonItem lines="full">
+            <IonLabel position="floating">Name</IonLabel>
+            <IonInput
+              type="text"
+              required
+              value={user.username}
+              onIonChange={updateUserData}
+            ></IonInput>{" "}
+          </IonItem>
+
+          <IonRadioGroup value={user.lookingFor}>
+            <IonListHeader>
+              <IonLabel>Looking for</IonLabel>
+            </IonListHeader>
+            <IonItem>
+              <IonLabel>Male</IonLabel>
+              <IonRadio
+                slot="start"
+                value="male"
+                onClick={updateUserData}
+              ></IonRadio>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Female</IonLabel>
+              <IonRadio
+                slot="start"
+                value="female"
+                onClick={updateUserData}
+              ></IonRadio>
+            </IonItem>
+            <IonItem>
+              <IonLabel>Both</IonLabel>
+              <IonRadio
+                slot="start"
+                value="both"
+                onClick={updateUserData}
+              ></IonRadio>
+            </IonItem>
+          </IonRadioGroup>
+
+          {/* 
+          <IonItem key={track}>
+              { ios &&
+                <IonIcon slot="start" icon={iconMap[track]} color="medium" />
+              }
+              <IonLabel>{track}</IonLabel>
+              <IonCheckbox
+                onClick={() => toggleTrackFilter(track)}
+                checked={filteredTracks.indexOf(track) !== -1}
+                color="primary"
+                value={track}
+              ></IonCheckbox>
+            </IonItem> */}
+
+          <IonList lines="full">
+            <IonListHeader>
+              <IonLabel>HereFor</IonLabel>
+            </IonListHeader>
+
+            <IonItem>
+              <IonCheckbox
+                checked={checkIfChecked("chats")}
+                value="chats"
+                onClick={updateUserData}
+              />
+              <IonLabel>Chats</IonLabel>
+            </IonItem>
+            <IonItem>
+              <IonCheckbox
+                checked={checkIfChecked("acquaintances")}
+                value="acquaintances"
+                onClick={updateUserData}
+              />
+              <IonLabel>bla</IonLabel>
+            </IonItem>
+            <IonItem>
+              <IonCheckbox
+                checked={checkIfChecked("dates")}
+                value="dates"
+                onClick={updateUserData}
+              />
+              <IonLabel>blabla</IonLabel>
+            </IonItem>
+          </IonList>
+        </form>
+
+        <IonButton onClick={log}>log</IonButton>
         <IonButton onClick={logout}>logout</IonButton>
       </IonContent>
     </IonPage>

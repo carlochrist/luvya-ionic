@@ -34,7 +34,7 @@ const TabRoot: React.FC = () => {
   return (
     <IonTabs>
       <IonRouterOutlet>
-        <Redirect exact path="/main" to="/main/matchgame" />
+        <Redirect exact path="/main" to="/main/profile" />
         <Route path="/main/profile" render={() => <Profile />} exact={true} />
         <Route
           path="/main/matchgame"

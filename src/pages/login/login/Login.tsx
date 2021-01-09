@@ -10,11 +10,20 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import "./Login.css";
-import { loginUser } from "../../../firebaseConfig";
+import { database, loginUser } from "../../../firebaseConfig";
 import { toast } from "../../../toast";
 import { Link, useHistory } from "react-router-dom";
 import { setUserState } from "../../../redux/actions";
 import { useDispatch } from "react-redux";
+
+interface UserData {
+  email: string;
+  username: string;
+  gender: string;
+  lookingFor: string;
+  hereFor: [];
+  prevState: null;
+}
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState("");
@@ -22,15 +31,44 @@ const Login: React.FC = () => {
   const [busy, setBusy] = useState<boolean>(false);
   const history = useHistory();
   const dispatch = useDispatch();
+  const [user, setUser] = useState(null as any);
+  const [pictures, setPictures] = useState([] as any);
 
   async function login() {
     setBusy(true);
     const res: any = await loginUser(username, password);
 
     if (res) {
-      dispatch(setUserState(res.user.email));
-      history.replace("/main");
+      // console.log(res);
+      // console.log(res.user);
+
+      // hier abgleich
+      database.collection("users").onSnapshot((snapshot) => {
+        snapshot.forEach((doc) => {
+          const currentUser = doc.data();
+          if (res.user.email === currentUser["email"]) {
+            currentUser.id = doc.id;
+
+            // console.log(currentUser);
+
+            // database
+            //   .collection("users")
+            //   .doc(doc.id)
+            //   .collection("pictures")
+            //   .onSnapshot((snapshot) => {
+            //     setPictures(snapshot.docs.map((doc) => doc.data()));
+            //   });
+
+            // console.log(currentUser);
+            // setUser(currentUser);
+
+            dispatch(setUserState(currentUser));
+            history.replace("/main");
+          }
+        });
+      });
       toast("You are loggeed in!", 3000);
+      // console.log(user);
     }
     setBusy(false);
   }
