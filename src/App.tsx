@@ -75,6 +75,8 @@ const App: React.FC = () => {
   const dispatch = useDispatch();
 
   useEffect(() => {
+    console.log("RELOAD APP");
+    console.log(getCurrentUser());
     if (
       getCurrentUser().then((user: any) => {
         console.log(user);

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import {
   IonApp,
   IonButton,
+  IonCard,
   IonContent,
   IonHeader,
   IonInput,
@@ -31,7 +32,9 @@ const LoginOverview: React.FC = () => {
   return (
     <IonPage>
       <IonHeader>
-        <IonToolbar>Luvya</IonToolbar>
+        <IonCard className="background__transparent">
+          <img src="../../assets/img/logo/logo.png" alt="your image" />
+        </IonCard>
       </IonHeader>
       <IonContent>
         <IonButton color="primary" expand="full" routerLink="/login">

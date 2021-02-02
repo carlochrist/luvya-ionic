@@ -10,11 +10,11 @@ import {
   IonToolbar,
 } from "@ionic/react";
 import "./Login.css";
-import { database, loginUser } from "../../../firebaseConfig";
+import { database, getCurrentUser, loginUser } from "../../../firebaseConfig";
 import { toast } from "../../../toast";
 import { Link, useHistory } from "react-router-dom";
-import { setUserState } from "../../../redux/actions";
-import { useDispatch } from "react-redux";
+import { setLoggedInState, setUserState } from "../../../redux/actions";
+import { useDispatch, useSelector } from "react-redux";
 
 interface UserData {
   email: string;
@@ -31,8 +31,13 @@ const Login: React.FC = () => {
   const [busy, setBusy] = useState<boolean>(false);
   const history = useHistory();
   const dispatch = useDispatch();
-  const [user, setUser] = useState(null as any);
+  // const [user, setUser] = useState(null as any);
   const [pictures, setPictures] = useState([] as any);
+
+  const [loggedIn, setLoggedIn] = useState<boolean>(false);
+
+  const user = useSelector((state: any) => state.user);
+  const loggedInState = useSelector((state: any) => state.loggedIn);
 
   async function login() {
     setBusy(true);
@@ -42,33 +47,54 @@ const Login: React.FC = () => {
       // console.log(res);
       // console.log(res.user);
 
-      // hier abgleich
-      database.collection("users").onSnapshot((snapshot) => {
-        snapshot.forEach((doc) => {
-          const currentUser = doc.data();
-          if (res.user.email === currentUser["email"]) {
-            currentUser.id = doc.id;
+      getCurrentUser().then((userFirebase: any) => {
+        // console.log(user);
+        // console.log(userFirebase);
 
-            // console.log(currentUser);
+        if (user) {
+          // hier abgleich
+          database.collection("users").onSnapshot((snapshot) => {
+            snapshot.forEach((doc) => {
+              if (!loggedIn) {
+                console.log("LOGIN TRIGGERED");
 
-            // database
-            //   .collection("users")
-            //   .doc(doc.id)
-            //   .collection("pictures")
-            //   .onSnapshot((snapshot) => {
-            //     setPictures(snapshot.docs.map((doc) => doc.data()));
-            //   });
+                const currentUser = doc.data();
+                if (res.user.email === currentUser["email"]) {
+                  currentUser.id = doc.id;
 
-            // console.log(currentUser);
-            // setUser(currentUser);
+                  // setPictures
+                  database
+                    .collection("users")
+                    .doc(doc.id)
+                    .collection("pictures")
+                    .onSnapshot((snapshot) => {
+                      if (loggedInState === undefined) {
+                        // const loggedInObject = {
+                        //   loggedIn: true,
+                        //   test: "test123",
+                        // };
+                        // dispatch(setLoggedInState(loggedInObject));
 
-            dispatch(setUserState(currentUser));
-            history.replace("/main");
-          }
-        });
+                        let pictures = snapshot.docs.map((doc) => doc.data());
+                        currentUser.pictures = pictures;
+                        dispatch(setUserState(currentUser));
+                        if (!Object.keys(user).length) {
+                          if (history.location.pathname === "/login") {
+                            history.replace("/main");
+                          }
+                        }
+                      }
+                    });
+                }
+              }
+            });
+          });
+          toast("You are loggeed in!", 3000);
+          // console.log(user);
+        } else {
+          history.replace("/main");
+        }
       });
-      toast("You are loggeed in!", 3000);
-      // console.log(user);
     }
     setBusy(false);
   }

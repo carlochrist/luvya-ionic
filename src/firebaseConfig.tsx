@@ -1,3 +1,4 @@
+import { QuerySnapshot } from "@firebase/firestore-types";
 import { rejects } from "assert";
 import * as firebase from "firebase";
 import { useEffect, useState } from "react";
@@ -184,6 +185,20 @@ function FirebaseFileUploadApi(): [
                       snapshot.forEach((doc) => {
                         const currentUser = doc.data();
                         if (user.email === currentUser["email"]) {
+                          // delete pictures
+                          database
+                            .collection("users")
+                            .doc(doc.id)
+                            .collection("pictures")
+                            .get()
+                            .then((querySnapshot) => {
+                              if (!querySnapshot.empty) {
+                                const queryDocumentSnapshot =
+                                  querySnapshot.docs[0];
+                                return queryDocumentSnapshot.ref.delete();
+                              }
+                            });
+
                           // post image inside db
                           database
                             .collection("users")

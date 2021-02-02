@@ -45,9 +45,11 @@ const Profile: React.FC = () => {
   const [busy, setBusy] = useState(false);
   // const [user, setUser] = useState(getCurrentUser());
   const [checked, setChecked] = useState(false);
+  const [picture, setPicture] = useState(null);
   const dispatch = useDispatch();
 
   const user = useSelector((state: any) => state.user);
+  const loggedInState = useSelector((state: any) => state.loggedIn);
 
   // const [didMount, setDidMount] = useState(false);
 
@@ -118,6 +120,7 @@ const Profile: React.FC = () => {
   const log = () => {
     console.log(photo);
     console.log(user);
+    console.log(loggedInState);
   };
 
   const upload = () => {
@@ -149,6 +152,15 @@ const Profile: React.FC = () => {
     if (user === undefined) {
       return;
     } else {
+      // set picture
+
+      console.log(user);
+      console.log(user.pictures[0]);
+
+      // history.replace("/main/profile");
+
+      // setFileData(user.pictures[0]);
+
       // do stuff
       // database.collection("users").doc(user.id).set(
       //   {
@@ -175,7 +187,7 @@ const Profile: React.FC = () => {
     return user[property] === value ? true : false;
   };
 
-  const updateUserData = (event: any) => {
+  const updateUserData = async (event: any) => {
     // // object-destructuring
     const { name, value, checked } = event.target;
 
@@ -187,6 +199,7 @@ const Profile: React.FC = () => {
 
     // check if ion-input
     if (name.startsWith("ion-input")) {
+      await new Promise((resolve) => setTimeout(resolve, 5000)); // 3 sec
       user.username = value;
     }
 
@@ -206,6 +219,15 @@ const Profile: React.FC = () => {
 
     // dispatch(setUserState(user));
 
+    // if (!user.hasOwnProperty("likes")) {
+    //   user.likes = any[] = [];
+    // }
+
+    // if (!user.hasOwnProperty("dislikes")) {
+    //   user.dislikes = any[] = [];
+    // }
+
+    console.log("UPDATE USER");
     console.log(user);
 
     database.collection("users").doc(user.id).set(
@@ -214,6 +236,8 @@ const Profile: React.FC = () => {
         lookingFor: user.lookingFor,
         hereFor: user.hereFor,
         username: user.username,
+        // likes: user.likes,
+        // dislikes: user.dislikes,
       },
       { merge: true }
     );
@@ -227,13 +251,19 @@ const Profile: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <p> PROFILE!</p>
-
-        {photo ? (
+        {/* {photo ? (
           <div>
             <pre>{JSON.stringify(photo, null, 2)}</pre>
             <IonCard>
               <img src={photo.dataUrl || photo.webPath} />
+            </IonCard>
+          </div>
+        ) : null} */}
+
+        {user.pictures[0] ? (
+          <div>
+            <IonCard>
+              <img src={user.pictures[0].imageUrl} />
             </IonCard>
           </div>
         ) : null}
@@ -241,7 +271,6 @@ const Profile: React.FC = () => {
         <div>
           {/* <IonInput type= onClick={handleTakePhoto}>Take/Select Photo</IonButton> */}
           <IonButton onClick={handleTakePhoto}>Take/Select Photo</IonButton>
-          <IonButton onClick={log}>Upload</IonButton>
         </div>
         {/* <!-- the toast for errors --> */}
         <IonToast

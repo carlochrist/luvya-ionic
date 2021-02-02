@@ -13,11 +13,22 @@ export default function reducer(
                 ...state,
     user: {
         id: payload.id,
-        email: payload.email.split('@')[0],
+        email: payload.email,
         username: payload.username,
         gender: payload.gender,
         hereFor: payload.hereFor,
         lookingFor: payload.lookingFor,
+        likes: payload.likes,
+        dislikes: payload.dislikes,
+        pictures: payload.pictures,
+    }
+            }
+            case 'SET_LOGGED_IN': 
+            return {
+                ...state,
+    loggedIn: {
+        loggedIn: payload.loggedIn,
+        test: payload.test
     }
             }
         }
@@ -25,7 +36,7 @@ export default function reducer(
         return state;
     }
 
-
+//         email: payload.email.split('@')[0],
 
     // user: {
     //     username: payload.split('@')[0]

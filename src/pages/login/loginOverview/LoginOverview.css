@@ -1,0 +1,11 @@
+.background__transparent {
+    text-align: center;
+    padding: 20px;
+    color: grey;
+    background: transparent !important
+  }
+
+
+  .ion-color-favorite {
+    color: "#FFFFFF";
+  }
