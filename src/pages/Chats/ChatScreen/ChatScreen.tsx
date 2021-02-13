@@ -1,49 +1,46 @@
 import React, { useState, useEffect } from "react";
 import "./ChatScreen.css";
-import { Button, Input } from "@material-ui/core";
-import Avatar from "@material-ui/core/Avatar";
-import { database, firebaseApp } from "./../../firebase";
 import firebase from "firebase";
+import { database } from "../../../firebaseConfig";
+import { useDispatch, useSelector } from "react-redux";
+import { IonAvatar, IonButton } from "@ionic/react";
+import { setUserSelectedState } from "../../../redux/actions";
 
-function ChatScreen(chat) {
+const ChatScreen: React.FC = () => {
   const [input, setInput] = useState("");
   const [messages, setMessages] = useState([]);
   const [messagesSent, setMessagesSent] = useState(false);
+  const userSelected = useSelector((state: any) => state.userSelected);
+  const dispatch = useDispatch();
 
-  const handleSend = (e) => {
-    e.preventDefault();
-
-    database.collection("chats").doc(chat.chat.id).collection("messages").add({
-      message: input,
-      timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      userEmail: chat.chat.loggedInUser,
-      username: getOwnUsername(),
-    });
-
-    setMessages([...messages, { message: input }]);
-    setInput("");
-  };
-
-  const getMatchUsername = () => {
-    // console.log(chat);
-    return chat.chat.loggedInUser === chat.chat.userEmail1
-      ? chat.chat.username2
-      : chat.chat.username1;
-  };
-
-  const getOwnUsername = () => {
-    return chat.chat.loggedInUser === chat.chat.userEmail1
-      ? chat.chat.username1
-      : chat.chat.username2;
-  };
-
+  // const handleSend = (e) => {
+  //   e.preventDefault();
+  //   database.collection("chats").doc(chat.chat.id).collection("messages").add({
+  //     message: input,
+  //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+  //     userEmail: chat.chat.loggedInUser,
+  //     username: getOwnUsername(),
+  //   });
+  //   setMessages([...messages, { message: input }]);
+  //   setInput("");
+  // };
+  // const getMatchUsername = () => {
+  //   // console.log(chat);
+  //   return chat.chat.loggedInUser === chat.chat.userEmail1
+  //     ? chat.chat.username2
+  //     : chat.chat.username1;
+  // };
+  // const getOwnUsername = () => {
+  //   return chat.chat.loggedInUser === chat.chat.userEmail1
+  //     ? chat.chat.username1
+  //     : chat.chat.username2;
+  // };
   // database.collection("chats").doc(chat.chat.id).collection("messages").add({
   //   message: input,
   //   timestamp: "",
   //   userEmail: chat.chat.loggedInUser,
   //   username: getOwnUsername(),
   // });
-
   // useEffect(() => {
   //   const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
   //     snapshot.forEach((doc) => {
@@ -51,7 +48,6 @@ function ChatScreen(chat) {
   //         id: doc.id,
   //         ...doc.data(),
   //       };
-
   //       if (loggedInUser.user.email !== currentUser.email) {
   //         if (
   //           loggedInUser.user.lookingFor === currentUser.gender ||
@@ -75,9 +71,7 @@ function ChatScreen(chat) {
   //                   };
   //                   fetchedPictures.push(fetchedPicture);
   //                 });
-
   //                 currentUser.pictures = fetchedPictures;
-
   //                 setUsers((oldUsers) => {
   //                   if (
   //                     oldUsers.find((user) => user.email === currentUser.email)
@@ -95,40 +89,34 @@ function ChatScreen(chat) {
   //       }
   //     });
   //   });
-
   //   return () => {
   //     // this is the cleanup...
   //     unsubscribe();
   //   };
-
   // this will run ONCE when the component loads and never again
   // }, []);
-
   // useEffect runs a piece of code based on a specific condition
-  useEffect(() => {
-    // let mounted = true;
 
-    database
-      .collection("chats")
-      .doc(chat.chat.id)
-      .collection("messages")
-      .orderBy("timestamp", "asc")
-      .onSnapshot((snapshot) => {
-        // every time a new post is added, this code fires
-
-        // console.log(snapshot);
-
-        // snapshot.docs.map((doc) => console.log(doc.data()));
-
-        setMessages(
-          snapshot.docs.map((doc) => ({
-            id: doc.id,
-            message: doc.data(),
-          }))
-        );
-        // }
-      });
-  }, []);
+  // useEffect(() => {
+  //   // let mounted = true;
+  //   database
+  //     .collection("chats")
+  //     .doc(chat.chat.id)
+  //     .collection("messages")
+  //     .orderBy("timestamp", "asc")
+  //     .onSnapshot((snapshot) => {
+  //       // every time a new post is added, this code fires
+  //       // console.log(snapshot);
+  //       // snapshot.docs.map((doc) => console.log(doc.data()));
+  //       setMessages(
+  //         snapshot.docs.map((doc) => ({
+  //           id: doc.id,
+  //           message: doc.data(),
+  //         }))
+  //       );
+  //       // }
+  //     });
+  // }, []);
 
   // useEffect(() => {
   //   const unsubscribe = database
@@ -149,36 +137,44 @@ function ChatScreen(chat) {
   //       // setError(error);
   //       console.log(error);
   //     });
-
   //   return () => {
   //     // this is the cleanup...
   //     unsubscribe();
   //   };
   // }, []);
 
-  useEffect(() => {
-    if (chat.chat.messages.length > 0) {
-      setMessagesSent(true);
-    }
-  }, []);
+  // useEffect(() => {
+  //   if (chat.chat.messages.length > 0) {
+  //     setMessagesSent(true);
+  //   }
+  // }, []);
 
-  const checkForOwnMessage = (message) => {
-    return message.userEmail === chat.chat.loggedInUser ? true : false;
-  };
+  // const checkForOwnMessage = (message) => {
+  //   return message.userEmail === chat.chat.loggedInUser ? true : false;
+  // };
 
-  const logData = () => {
-    console.log(chat);
+  // const logData = () => {
+  //   console.log(chat);
+  // };
+
+  const navigateBackToChats = () => {
+    console.log(userSelected);
+    dispatch(setUserSelectedState(null));
   };
 
   return (
     <div className="chatScreen">
+      <IonButton onClick={navigateBackToChats}> back </IonButton>
+      <IonAvatar>
+        <img src={userSelected.pictures[0].imageUrl} />
+      </IonAvatar>
+      chatscreen
       {!messagesSent ? (
         <p className="chatScreen__timestamp">
-          You matched with {getMatchUsername()} on XXX
+          You matched with {userSelected.username} on XXX
         </p>
       ) : null}
-
-      {messages.map((message) =>
+      {/* {messages.map((message) =>
         !checkForOwnMessage(message.message) ? (
           <div key={message.id} className="chatScreen__message">
             <Avatar
@@ -192,8 +188,7 @@ function ChatScreen(chat) {
             <p className="chatScreen__text__self">{message.message.message}</p>
           </div>
         )
-      )}
-
+      )} */}
       <div>
         <form className="chatScreen__input">
           <input
@@ -203,18 +198,18 @@ function ChatScreen(chat) {
             className="chatScreen__inputField"
             placeholder="Type a message..."
           />
-          <button
+          {/* <button
             type="submit"
             onClick={handleSend}
             className="chatScreen__inputButton"
           >
             SEND
-          </button>
+          </button> */}
         </form>
       </div>
     </div>
   );
-}
+};
 
 export default ChatScreen;
 

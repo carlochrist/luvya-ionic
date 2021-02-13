@@ -227,8 +227,7 @@ const Profile: React.FC = () => {
     //   user.dislikes = any[] = [];
     // }
 
-    console.log("UPDATE USER");
-    console.log(user);
+    // await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 sec
 
     database.collection("users").doc(user.id).set(
       {

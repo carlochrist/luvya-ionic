@@ -68,22 +68,16 @@ const Login: React.FC = () => {
                     .doc(doc.id)
                     .collection("pictures")
                     .onSnapshot((snapshot) => {
-                      if (loggedInState === undefined) {
-                        // const loggedInObject = {
-                        //   loggedIn: true,
-                        //   test: "test123",
-                        // };
-                        // dispatch(setLoggedInState(loggedInObject));
+                      let pictures = snapshot.docs.map((doc) => doc.data());
+                      currentUser.pictures = pictures;
 
-                        let pictures = snapshot.docs.map((doc) => doc.data());
-                        currentUser.pictures = pictures;
-                        dispatch(setUserState(currentUser));
-                        if (!Object.keys(user).length) {
-                          if (history.location.pathname === "/login") {
-                            history.replace("/main");
-                          }
+                      dispatch(setUserState(currentUser));
+                      if (!Object.keys(user).length) {
+                        if (history.location.pathname === "/login") {
+                          history.replace("/main");
                         }
                       }
+                      // }
                     });
                 }
               }

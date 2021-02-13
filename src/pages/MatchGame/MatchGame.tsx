@@ -6,12 +6,13 @@ import {
   IonIcon,
   IonInput,
   IonLoading,
+  IonModal,
   IonPage,
   IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import "./MatchGame.css";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { database, logoutUser } from "../../firebaseConfig";
 import { useHistory } from "react-router";
 import TinderCard from "react-tinder-card";
@@ -23,13 +24,20 @@ import {
   reloadCircleOutline,
   star,
 } from "ionicons/icons";
+// import MatchModal from "./MatchModal";
+import { setUserMatchedState } from "../../redux/actions";
+import MatchModal from "./MatchModal";
 
 const MatchGame: React.FC = () => {
   const username = useSelector((state: any) => state.user.username);
   const history = useHistory();
+  const dispatch = useDispatch();
+
   const [busy, setBusy] = useState(false);
   const user = useSelector((state: any) => state.user);
+  const userMatched = useSelector((state: any) => state.userMatched);
   const [users, setUsers] = useState([] as any[]);
+  const [showMatchModal, setShowMatchModal] = useState(false);
 
   const log = () => {
     console.log(user);
@@ -41,16 +49,8 @@ const MatchGame: React.FC = () => {
   //   };
 
   useEffect(() => {
-    // console.log("reload USERS!!!");
-    // console.log(user);
-    // console.log(users);
-
-    // setUsers(null);
-
     const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
       snapshot.forEach((doc) => {
-        // console.log(doc.data());
-
         const currentUser = {
           id: doc.id,
           email: doc.data().email,
@@ -80,8 +80,8 @@ const MatchGame: React.FC = () => {
         }
 
         if (user.email !== currentUser.email) {
-          // console.log("user:", user);
-          // console.log("currentUser:", currentUser);
+          console.log("user:", user);
+          console.log("currentUser:", currentUser);
 
           if (
             user.lookingFor === currentUser.gender ||
@@ -128,10 +128,10 @@ const MatchGame: React.FC = () => {
               }
             }
           }
-          // remove user (gender)
+          // remove user by gender
           else {
             setUsers((users) =>
-              users.filter((user) => user.id === currentUser.id)
+              users.filter((user) => user.id !== currentUser.id)
             );
           }
         }
@@ -215,12 +215,23 @@ const MatchGame: React.FC = () => {
 
                   console.log("MATCH!");
                   //  console.log("User: ", user);
-                  //  console.log("currentUser: ", currentUser);
+
+                  // setPictures
+                  database
+                    .collection("users")
+                    .doc(doc.id)
+                    .collection("pictures")
+                    .onSnapshot((snapshot) => {
+                      let pictures = snapshot.docs.map((doc) => doc.data());
+                      currentUser.pictures = pictures;
+                      console.log("currentUser: ", currentUser);
+                      dispatch(setUserMatchedState(currentUser));
+                    });
 
                   // add pictures to currentUser
-                  currentUser.pictures = user.pictures;
+                  // currentUser.pictures = user.pictures;
                   // setUserMatched(currentUser);
-                  // setShowMatchModal(true);
+                  setShowMatchModal(true);
                 }
               }
             }
@@ -228,6 +239,15 @@ const MatchGame: React.FC = () => {
         }
       });
     });
+  };
+
+  async function closeModal() {
+    await setShowMatchModal(false);
+  }
+
+  const jumpToChat = () => {
+    setShowMatchModal(false);
+    history.replace("/main/chats");
   };
 
   return (
@@ -239,6 +259,22 @@ const MatchGame: React.FC = () => {
       </IonHeader>
       <IonContent className="ion-padding">
         <IonButton onClick={log}>log</IonButton>
+        <IonButton onClick={() => setShowMatchModal(true)}>showModal</IonButton>
+
+        <IonModal isOpen={showMatchModal} swipeToClose={true}>
+          <MatchModal></MatchModal>
+          <div>
+            <IonButton onClick={() => setShowMatchModal(false)}>
+              Continue swiping
+            </IonButton>
+            <IonButton onClick={() => jumpToChat()}>
+              Jump to chat with {userMatched?.username}
+            </IonButton>
+          </div>
+          {/* <MyModal>
+
+        </MyModal> */}
+        </IonModal>
 
         <div className="matchGame__outerCardContainer">
           {users.map((user, index) => (

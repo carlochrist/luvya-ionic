@@ -23,6 +23,17 @@ export default function reducer(
         pictures: payload.pictures,
     }
             }
+
+            case 'SET_USER_MATCHED_STATE': 
+            return {
+                ...state,
+    userMatched: {
+        username: payload.username,
+        pictures: payload.pictures,
+        hereFor: payload.hereFor
+    }
+            }
+
             case 'SET_LOGGED_IN': 
             return {
                 ...state,
@@ -31,10 +42,35 @@ export default function reducer(
         test: payload.test
     }
             }
+
+            case 'SET_USER_SELECTED_STATE': 
+            console.log(type);
+            console.log(payload);
+
+            if (payload === null) {
+                return {
+                    ...state,
+                    userSelected: null
+                }
+            } else {
+                return {
+                    ...state,
+                    userSelected: {
+                        id: payload.id,
+                        username: payload.username,
+                        pictures: payload.pictures
+                    }
+                }
+            }
+            
+         
         }
 
         return state;
     }
+
+
+    
 
 //         email: payload.email.split('@')[0],
 
