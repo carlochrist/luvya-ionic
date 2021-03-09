@@ -1,7 +1,8 @@
 import { IonAvatar, IonButton } from "@ionic/react";
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { database } from "../../../firebaseConfig";
+import { useHistory } from "react-router";
+import { database, getCurrentUser } from "../../../firebaseConfig";
 import { setUserSelectedState } from "../../../redux/actions";
 // import Avatar from "@material-ui/core/Avatar";
 // import { makeStyles } from "@material-ui/core/styles";
@@ -39,55 +40,68 @@ const MatchBar: React.FC = () => {
 
   const [matchedUsers, setMatchedUsers] = useState([] as any[]);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
+    // console.log(getCurrentUser());
+
     const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
       snapshot.forEach((doc) => {
-        const currentUser = {
-          id: doc.id,
-          email: doc.data().email,
-          gender: doc.data().gender,
-          pictures: [] as any[],
-          likes: doc.data().likes,
-          dislikes: doc.data().dislikes,
-          ...doc.data(),
-        };
+        // console.log(user);
+        if (!Object.keys(user).length) {
+          // if (history.location.pathname === "/login") {
+          //   history.replace("/main");
+          // }
+          history.replace("/main/matchgame");
+        } else {
+          const currentUser = {
+            id: doc.id,
+            email: doc.data().email,
+            gender: doc.data().gender,
+            pictures: [] as any[],
+            likes: doc.data().likes,
+            dislikes: doc.data().dislikes,
+            ...doc.data(),
+          };
 
-        if (
-          currentUser.email != user.email &&
-          user.likes.includes(currentUser.email) &&
-          currentUser.likes.includes(user.email)
-        ) {
-          database
-            .collection("users")
-            .doc(currentUser.id)
-            .collection("pictures")
-            .get()
-            .then((response) => {
-              const fetchedPictures: any[] = [];
-              response.forEach((document) => {
-                const fetchedPicture = {
-                  id: document.id,
-                  ...document.data(),
-                };
-                fetchedPictures.push(fetchedPicture);
-              });
-
-              currentUser.pictures = fetchedPictures;
-              // currentUser['pictures'] = fetchedPictures;
-
-              if (currentUser.pictures.length > 0) {
-                setMatchedUsers((oldUsers) => {
-                  if (oldUsers.find((user) => user.email === currentUser.email))
-                    return oldUsers;
-                  return [...oldUsers, currentUser];
+          if (
+            currentUser.email != user.email &&
+            user.likes.includes(currentUser.email) &&
+            currentUser.likes.includes(user.email)
+          ) {
+            database
+              .collection("users")
+              .doc(currentUser.id)
+              .collection("pictures")
+              .get()
+              .then((response) => {
+                const fetchedPictures: any[] = [];
+                response.forEach((document) => {
+                  const fetchedPicture = {
+                    id: document.id,
+                    ...document.data(),
+                  };
+                  fetchedPictures.push(fetchedPicture);
                 });
-              }
-            })
-            .catch((error) => {
-              // setError(error);
-              console.log(error);
-            });
+
+                currentUser.pictures = fetchedPictures;
+                // currentUser['pictures'] = fetchedPictures;
+
+                if (currentUser.pictures.length > 0) {
+                  setMatchedUsers((oldUsers) => {
+                    if (
+                      oldUsers.find((user) => user.email === currentUser.email)
+                    )
+                      return oldUsers;
+                    return [...oldUsers, currentUser];
+                  });
+                }
+              })
+              .catch((error) => {
+                // setError(error);
+                console.log(error);
+              });
+          }
         }
       });
     });

@@ -44,9 +44,6 @@ export default function reducer(
             }
 
             case 'SET_USER_SELECTED_STATE': 
-            console.log(type);
-            console.log(payload);
-
             if (payload === null) {
                 return {
                     ...state,
@@ -57,6 +54,7 @@ export default function reducer(
                     ...state,
                     userSelected: {
                         id: payload.id,
+                        email: payload.email,
                         username: payload.username,
                         pictures: payload.pictures
                     }

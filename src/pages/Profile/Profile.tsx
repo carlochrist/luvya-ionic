@@ -144,34 +144,30 @@ const Profile: React.FC = () => {
   useEffect(() => {
     if (Object.keys(user).length === 0) {
       console.log(user);
-      // history.replace("/login");
+      history.replace("/main/matchgame");
     }
   }, []);
 
-  useEffect(() => {
-    if (user === undefined) {
-      return;
-    } else {
-      // set picture
-
-      console.log(user);
-      console.log(user.pictures[0]);
-
-      // history.replace("/main/profile");
-
-      // setFileData(user.pictures[0]);
-
-      // do stuff
-      // database.collection("users").doc(user.id).set(
-      //   {
-      //     gender: user.gender,
-      //     lookingFor: user.lookingFor,
-      //     hereFor: user.hereFor,
-      //   },
-      //   { merge: true }
-      // );
-    }
-  }, [user]);
+  // useEffect(() => {
+  //   if (user === undefined) {
+  //     return;
+  //   } else {
+  //     // set picture
+  //     // console.log(user);
+  //     // console.log(user.pictures[0]);
+  //     // history.replace("/main/profile");
+  //     // setFileData(user.pictures[0]);
+  //     // do stuff
+  //     // database.collection("users").doc(user.id).set(
+  //     //   {
+  //     //     gender: user.gender,
+  //     //     lookingFor: user.lookingFor,
+  //     //     hereFor: user.hereFor,
+  //     //   },
+  //     //   { merge: true }
+  //     // );
+  //   }
+  // }, [user]);
 
   const checkIfChecked = (hereFor: string) => {
     let checked = false;
@@ -249,8 +245,9 @@ const Profile: React.FC = () => {
           <IonTitle>Profile</IonTitle>
         </IonToolbar>
       </IonHeader>
-      <IonContent className="ion-padding">
-        {/* {photo ? (
+      {Object.keys(user).length !== 0 ? (
+        <IonContent className="ion-padding">
+          {/* {photo ? (
           <div>
             <pre>{JSON.stringify(photo, null, 2)}</pre>
             <IonCard>
@@ -259,78 +256,78 @@ const Profile: React.FC = () => {
           </div>
         ) : null} */}
 
-        {user.pictures[0] ? (
+          {user.pictures[0] ? (
+            <div>
+              <IonCard>
+                <img src={user.pictures[0].imageUrl} />
+              </IonCard>
+            </div>
+          ) : null}
+
           <div>
-            <IonCard>
-              <img src={user.pictures[0].imageUrl} />
-            </IonCard>
+            {/* <IonInput type= onClick={handleTakePhoto}>Take/Select Photo</IonButton> */}
+            <IonButton onClick={handleTakePhoto}>Take/Select Photo</IonButton>
           </div>
-        ) : null}
-
-        <div>
-          {/* <IonInput type= onClick={handleTakePhoto}>Take/Select Photo</IonButton> */}
-          <IonButton onClick={handleTakePhoto}>Take/Select Photo</IonButton>
-        </div>
-        {/* <!-- the toast for errors --> */}
-        <IonToast
-          isOpen={isError ? true : false}
-          onDidDismiss={() => clearError(false)}
-          message={isError && isError.message}
-          color="danger"
-          position="bottom"
-          buttons={[
-            {
-              text: "Done",
-              role: "cancel",
-              handler: () => {
-                console.log("Cancel clicked");
+          {/* <!-- the toast for errors --> */}
+          <IonToast
+            isOpen={isError ? true : false}
+            onDidDismiss={() => clearError(false)}
+            message={isError && isError.message}
+            color="danger"
+            position="bottom"
+            buttons={[
+              {
+                text: "Done",
+                role: "cancel",
+                handler: () => {
+                  console.log("Cancel clicked");
+                },
               },
-            },
-          ]}
-        />
+            ]}
+          />
 
-        <form>
-          <IonItem lines="full">
-            <IonLabel position="floating">Name</IonLabel>
-            <IonInput
-              type="text"
-              required
-              value={user.username}
-              onIonChange={updateUserData}
-            ></IonInput>{" "}
-          </IonItem>
+          <form>
+            <IonItem lines="full">
+              <IonLabel position="floating">Name</IonLabel>
+              <IonInput
+                type="text"
+                required
+                value={user.username}
+                onIonChange={updateUserData}
+              ></IonInput>{" "}
+            </IonItem>
 
-          <IonRadioGroup value={user.lookingFor}>
-            <IonListHeader>
-              <IonLabel>Looking for</IonLabel>
-            </IonListHeader>
-            <IonItem>
-              <IonLabel>Male</IonLabel>
-              <IonRadio
-                slot="start"
-                value="male"
-                onClick={updateUserData}
-              ></IonRadio>
-            </IonItem>
-            <IonItem>
-              <IonLabel>Female</IonLabel>
-              <IonRadio
-                slot="start"
-                value="female"
-                onClick={updateUserData}
-              ></IonRadio>
-            </IonItem>
-            <IonItem>
-              <IonLabel>Both</IonLabel>
-              <IonRadio
-                slot="start"
-                value="both"
-                onClick={updateUserData}
-              ></IonRadio>
-            </IonItem>
-          </IonRadioGroup>
+            <IonRadioGroup value={user.lookingFor}>
+              <IonListHeader>
+                <IonLabel>Looking for</IonLabel>
+              </IonListHeader>
+              <IonItem>
+                <IonLabel>Male</IonLabel>
+                <IonRadio
+                  slot="start"
+                  value="male"
+                  onClick={updateUserData}
+                ></IonRadio>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Female</IonLabel>
+                <IonRadio
+                  slot="start"
+                  value="female"
+                  onClick={updateUserData}
+                ></IonRadio>
+              </IonItem>
+              <IonItem>
+                <IonLabel>Both</IonLabel>
+                <IonRadio
+                  slot="start"
+                  value="both"
+                  onClick={updateUserData}
+                ></IonRadio>
+              </IonItem>
+            </IonRadioGroup>
 
-          {/* 
+            {/* 
           <IonItem key={track}>
               { ios &&
                 <IonIcon slot="start" icon={iconMap[track]} color="medium" />
@@ -344,41 +341,42 @@ const Profile: React.FC = () => {
               ></IonCheckbox>
             </IonItem> */}
 
-          <IonList lines="full">
-            <IonListHeader>
-              <IonLabel>HereFor</IonLabel>
-            </IonListHeader>
+            <IonList lines="full">
+              <IonListHeader>
+                <IonLabel>HereFor</IonLabel>
+              </IonListHeader>
 
-            <IonItem>
-              <IonCheckbox
-                checked={checkIfChecked("chats")}
-                value="chats"
-                onClick={updateUserData}
-              />
-              <IonLabel>Chats</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonCheckbox
-                checked={checkIfChecked("acquaintances")}
-                value="acquaintances"
-                onClick={updateUserData}
-              />
-              <IonLabel>bla</IonLabel>
-            </IonItem>
-            <IonItem>
-              <IonCheckbox
-                checked={checkIfChecked("dates")}
-                value="dates"
-                onClick={updateUserData}
-              />
-              <IonLabel>blabla</IonLabel>
-            </IonItem>
-          </IonList>
-        </form>
+              <IonItem>
+                <IonCheckbox
+                  checked={checkIfChecked("chats")}
+                  value="chats"
+                  onClick={updateUserData}
+                />
+                <IonLabel>Chats</IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonCheckbox
+                  checked={checkIfChecked("acquaintances")}
+                  value="acquaintances"
+                  onClick={updateUserData}
+                />
+                <IonLabel>bla</IonLabel>
+              </IonItem>
+              <IonItem>
+                <IonCheckbox
+                  checked={checkIfChecked("dates")}
+                  value="dates"
+                  onClick={updateUserData}
+                />
+                <IonLabel>blabla</IonLabel>
+              </IonItem>
+            </IonList>
+          </form>
 
-        <IonButton onClick={log}>log</IonButton>
-        <IonButton onClick={logout}>logout</IonButton>
-      </IonContent>
+          <IonButton onClick={log}>log</IonButton>
+          <IonButton onClick={logout}>logout</IonButton>
+        </IonContent>
+      ) : null}
     </IonPage>
   );
 };

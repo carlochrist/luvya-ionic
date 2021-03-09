@@ -3,27 +3,55 @@ import "./ChatScreen.css";
 import firebase from "firebase";
 import { database } from "../../../firebaseConfig";
 import { useDispatch, useSelector } from "react-redux";
-import { IonAvatar, IonButton } from "@ionic/react";
+import {
+  IonAvatar,
+  IonButton,
+  IonContent,
+  IonInfiniteScroll,
+  IonInfiniteScrollContent,
+  IonInput,
+} from "@ionic/react";
 import { setUserSelectedState } from "../../../redux/actions";
 
 const ChatScreen: React.FC = () => {
   const [input, setInput] = useState("");
-  const [messages, setMessages] = useState([]);
+  // const [chat, setChat] = useState(null);
+  const [messages, setMessages] = useState([] as any[]);
   const [messagesSent, setMessagesSent] = useState(false);
+  const user = useSelector((state: any) => state.user);
   const userSelected = useSelector((state: any) => state.userSelected);
   const dispatch = useDispatch();
 
-  // const handleSend = (e) => {
-  //   e.preventDefault();
-  //   database.collection("chats").doc(chat.chat.id).collection("messages").add({
-  //     message: input,
-  //     timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-  //     userEmail: chat.chat.loggedInUser,
-  //     username: getOwnUsername(),
-  //   });
-  //   setMessages([...messages, { message: input }]);
-  //   setInput("");
-  // };
+  const sendMessage = (e: any) => {
+    e.preventDefault();
+
+    database.collection("chats").onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        const chat = doc.data();
+
+        chat.id = doc.id;
+
+        if (
+          (chat.userEmail1 === user.email || chat.userEmail2 === user.email) &&
+          (chat.userEmail1 === userSelected.email ||
+            chat.userEmail2 === userSelected.email)
+        ) {
+          console.log(chat);
+
+          database.collection("chats").doc(chat.id).collection("messages").add({
+            message: input,
+            timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+            userEmail: user.email,
+            username: user.username,
+          });
+          // setMessages([...messages, { message: input }]);
+        }
+      });
+    });
+
+    setInput("");
+  };
+
   // const getMatchUsername = () => {
   //   // console.log(chat);
   //   return chat.chat.loggedInUser === chat.chat.userEmail1
@@ -143,15 +171,68 @@ const ChatScreen: React.FC = () => {
   //   };
   // }, []);
 
-  // useEffect(() => {
-  //   if (chat.chat.messages.length > 0) {
-  //     setMessagesSent(true);
-  //   }
-  // }, []);
+  useEffect(() => {
+    database.collection("chats").onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        const chat = doc.data();
+        chat.id = doc.id;
 
-  // const checkForOwnMessage = (message) => {
-  //   return message.userEmail === chat.chat.loggedInUser ? true : false;
-  // };
+        if (
+          (chat.userEmail1 === user.email || chat.userEmail2 === user.email) &&
+          (chat.userEmail1 === userSelected.email ||
+            chat.userEmail2 === userSelected.email)
+        ) {
+          console.log(chat);
+          console.log(chat.messages.length);
+
+          // add messages to chat
+
+          database
+            .collection("chats")
+            .doc(chat.id)
+            .collection("messages")
+            .orderBy("timestamp", "asc")
+            .onSnapshot((snapshot) => {
+              // every time a new post is added, this code fires
+
+              // messages found
+              if (snapshot.docs.length > 0) {
+                setMessagesSent(true);
+              }
+
+              setMessages(
+                snapshot.docs.map((doc) => ({
+                  id: doc.id,
+                  message: doc.data(),
+                }))
+              );
+              // }
+            });
+
+          // database
+          //   .collection("chats")
+          //   .doc(chat.id)
+          //   .collection("messages")
+          //   .get()
+          //   .then((response) => {
+          //     response.forEach((message) => {
+          //       // messages found
+          //       setMessagesSent(true);
+
+          //     });
+          //   })
+          //   .catch((error) => {
+          //     // setError(error);
+          //     console.log(error);
+          //   })
+        }
+      });
+    });
+  }, []);
+
+  const checkForOwnMessage = (message: any) => {
+    return message.message.userEmail === user.email ? true : false;
+  };
 
   // const logData = () => {
   //   console.log(chat);
@@ -165,46 +246,69 @@ const ChatScreen: React.FC = () => {
   return (
     <div className="chatScreen">
       <IonButton onClick={navigateBackToChats}> back </IonButton>
-      <IonAvatar>
-        <img src={userSelected.pictures[0].imageUrl} />
-      </IonAvatar>
       chatscreen
       {!messagesSent ? (
-        <p className="chatScreen__timestamp">
+        <div className="chatScreen__timestamp">
+          <IonAvatar
+            style={{
+              display: "flex",
+              margin: "auto",
+              marginBottom: "10px",
+            }}
+          >
+            <img src={userSelected.pictures[0].imageUrl} />
+          </IonAvatar>
           You matched with {userSelected.username} on XXX
-        </p>
+        </div>
       ) : null}
-      {/* {messages.map((message) =>
-        !checkForOwnMessage(message.message) ? (
-          <div key={message.id} className="chatScreen__message">
-            <Avatar
-              className="chatScreen__image"
-              src={chat.chat.matchedUserImage}
-            />
-            <p className="chatScreen__text">{message.message.message}</p>
-          </div>
-        ) : (
-          <div key={message.id} className="chatScreen__message">
-            <p className="chatScreen__text__self">{message.message.message}</p>
-          </div>
-        )
-      )} */}
+      <IonContent fullscreen>
+        <IonButton onClick={navigateBackToChats}> back </IonButton>
+
+        {/* <IonInfiniteScroll>
+          <IonInfiniteScrollContent> */}
+        {messages.map((message) =>
+          !checkForOwnMessage(message) ? (
+            <div key={message.id} className="chatScreen__message">
+              <IonAvatar className="chatScreen__image">
+                <img src={userSelected.pictures[0].imageUrl} />
+              </IonAvatar>
+              <p className="chatScreen__text">{message.message.message}</p>
+            </div>
+          ) : (
+            <div key={message.id} className="chatScreen__message">
+              <p className="chatScreen__text__self">
+                {message.message.message}
+              </p>
+            </div>
+          )
+        )}
+        {/* </IonInfiniteScrollContent>
+        </IonInfiniteScroll> */}
+      </IonContent>
       <div>
         <form className="chatScreen__input">
-          <input
+          <IonInput
+            value={input}
+            onIonChange={(e: any) => setInput(e.target.value)}
+            type="text"
+            className="chatScreen__inputField"
+            placeholder="Type a message..."
+          ></IonInput>
+
+          {/* <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             type="text"
             className="chatScreen__inputField"
             placeholder="Type a message..."
-          />
-          {/* <button
+          /> */}
+          <button
             type="submit"
-            onClick={handleSend}
+            onClick={sendMessage}
             className="chatScreen__inputButton"
           >
             SEND
-          </button> */}
+          </button>
         </form>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Redirect, Route, Router } from "react-router-dom";
+import { Redirect, Route, Router, useHistory } from "react-router-dom";
 import {
   IonApp,
   IonIcon,
@@ -47,7 +47,7 @@ import "@ionic/react/css/display.css";
 /* Theme variables */
 import "./theme/variables.css";
 import MatchGame from "./pages/MatchGame/MatchGame";
-import { getCurrentUser } from "./firebaseConfig";
+import { database, getCurrentUser } from "./firebaseConfig";
 import { useDispatch } from "react-redux";
 import { setUserState } from "./redux/actions";
 import MainTabs from "./pages/TabRoot/TabRoot";
@@ -73,19 +73,48 @@ const App: React.FC = () => {
   const [userLoggedIn, setUserLoggedIn] = useState(false);
   const [busy, setBusy] = useState<Boolean>(false);
   const dispatch = useDispatch();
+  const history = useHistory();
 
   useEffect(() => {
     console.log("RELOAD APP");
     console.log(getCurrentUser());
     if (
       getCurrentUser().then((user: any) => {
-        console.log(user);
+        // console.log(user);
         if (user) {
           // logged in
           setUserLoggedIn(true);
-          // dispatch(setUserState(user.email));
-          console.log(userLoggedIn);
+
+          // TODO: outsource
+          database.collection("users").onSnapshot((snapshot) => {
+            snapshot.forEach((doc) => {
+              const currentUser = doc.data();
+              if (user.email === currentUser["email"]) {
+                currentUser.id = doc.id;
+
+                // setPictures
+                database
+                  .collection("users")
+                  .doc(doc.id)
+                  .collection("pictures")
+                  .onSnapshot((snapshot) => {
+                    let pictures = snapshot.docs.map((doc) => doc.data());
+                    currentUser.pictures = pictures;
+
+                    dispatch(setUserState(currentUser));
+                    if (!Object.keys(user).length) {
+                      if (history.location.pathname === "/login") {
+                        history.replace("/main");
+                      }
+                    }
+                    // }
+                  });
+              }
+            });
+          });
+          // dispatch(setUserState(user));
           window.history.replaceState({}, "", "/main");
+          // history.replace("/main/matchgame");
         } else {
           setUserLoggedIn(false);
           console.log(userLoggedIn);

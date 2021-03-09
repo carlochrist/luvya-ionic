@@ -71,12 +71,14 @@ const Login: React.FC = () => {
                       let pictures = snapshot.docs.map((doc) => doc.data());
                       currentUser.pictures = pictures;
 
+                      console.log(currentUser);
+
                       dispatch(setUserState(currentUser));
-                      if (!Object.keys(user).length) {
-                        if (history.location.pathname === "/login") {
-                          history.replace("/main");
-                        }
+                      // if (!Object.keys(user).length) {
+                      if (history.location.pathname === "/login") {
+                        history.replace("/main");
                       }
+                      // }
                       // }
                     });
                 }
