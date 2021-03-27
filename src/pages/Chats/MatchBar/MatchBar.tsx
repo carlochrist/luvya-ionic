@@ -64,43 +64,95 @@ const MatchBar: React.FC = () => {
             ...doc.data(),
           };
 
+          console.log(currentUser);
+
+          //     currentUser.chats
+          //     .map(
+          //       (chatObj: any) =>
+          //         chatObj.id
+          //     )
+          //     .indexOf(chat.id) === -1
+          // ) {
+          //   currentUser.chats.push(chat);
+          // }
+
+          // user.chats.map((chatObj: any) => chatObj.userEmail1 === currentUser.email ||
+          //       chatObj.userEmail2 === currentUser.email)
+
           if (
             currentUser.email != user.email &&
             user.likes.includes(currentUser.email) &&
             currentUser.likes.includes(user.email)
           ) {
-            database
-              .collection("users")
-              .doc(currentUser.id)
-              .collection("pictures")
-              .get()
-              .then((response) => {
-                const fetchedPictures: any[] = [];
-                response.forEach((document) => {
-                  const fetchedPicture = {
-                    id: document.id,
-                    ...document.data(),
-                  };
-                  fetchedPictures.push(fetchedPicture);
-                });
-
-                currentUser.pictures = fetchedPictures;
-                // currentUser['pictures'] = fetchedPictures;
-
-                if (currentUser.pictures.length > 0) {
-                  setMatchedUsers((oldUsers) => {
-                    if (
-                      oldUsers.find((user) => user.email === currentUser.email)
-                    )
-                      return oldUsers;
-                    return [...oldUsers, currentUser];
-                  });
+            console.log(
+              user.chats.map((chatObj: any) => {
+                if (
+                  (chatObj.userEmail1 === currentUser.email ||
+                    chatObj.userEmail2 === currentUser.email) &&
+                  chatObj.messages.length > 0
+                ) {
+                  return false;
+                } else {
+                  return true;
                 }
               })
-              .catch((error) => {
-                // setError(error);
-                console.log(error);
-              });
+            );
+            if (
+              !user.chats
+                .map((chatObj: any) => {
+                  if (
+                    (chatObj.userEmail1 === currentUser.email ||
+                      chatObj.userEmail2 === currentUser.email) &&
+                    chatObj.messages.length > 0
+                  ) {
+                    return false;
+                  } else {
+                    return true;
+                  }
+                })
+                .includes(false)
+              // .map((boolElement: any) => boolElement)
+              // .indexOf(false) !== -1
+              // .map((boolElement: any) => {
+              //   if (boolElement === false) return false;
+              // })
+            ) {
+              console.log(user);
+              database
+                .collection("users")
+                .doc(currentUser.id)
+                .collection("pictures")
+                .get()
+                .then((response) => {
+                  const fetchedPictures: any[] = [];
+                  response.forEach((document) => {
+                    const fetchedPicture = {
+                      id: document.id,
+                      ...document.data(),
+                    };
+                    fetchedPictures.push(fetchedPicture);
+                  });
+
+                  currentUser.pictures = fetchedPictures;
+                  // currentUser['pictures'] = fetchedPictures;
+
+                  if (currentUser.pictures.length > 0) {
+                    setMatchedUsers((oldUsers) => {
+                      if (
+                        oldUsers.find(
+                          (user) => user.email === currentUser.email
+                        )
+                      )
+                        return oldUsers;
+                      return [...oldUsers, currentUser];
+                    });
+                  }
+                })
+                .catch((error) => {
+                  // setError(error);
+                  console.log(error);
+                });
+            }
           }
         }
       });

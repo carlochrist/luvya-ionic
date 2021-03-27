@@ -21,6 +21,7 @@ export default function reducer(
         likes: payload.likes,
         dislikes: payload.dislikes,
         pictures: payload.pictures,
+        chats: payload.chats
     }
             }
 

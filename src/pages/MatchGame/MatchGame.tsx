@@ -25,7 +25,7 @@ import {
   star,
 } from "ionicons/icons";
 // import MatchModal from "./MatchModal";
-import { setUserMatchedState } from "../../redux/actions";
+import { setUserMatchedState, setUserState } from "../../redux/actions";
 import MatchModal from "./MatchModal";
 
 const MatchGame: React.FC = () => {
@@ -48,103 +48,105 @@ const MatchGame: React.FC = () => {
   // obj[keyToTransform] = [];
   //   };
 
-  useEffect(() => {
-    const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
-      snapshot.forEach((doc) => {
-        const currentUser = {
-          id: doc.id,
-          email: doc.data().email,
-          gender: doc.data().gender,
-          pictures: [] as any[],
-          likes: doc.data().likes,
-          dislikes: doc.data().dislikes,
-          ...doc.data(),
-        };
+  // useEffect(() => {
+  //   const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
+  //     snapshot.forEach((doc) => {
+  //       const currentUser = {
+  //         id: doc.id,
+  //         email: doc.data().email,
+  //         gender: doc.data().gender,
+  //         pictures: [] as any[],
+  //         chats: [] as any[],
+  //         likes: doc.data().likes,
+  //         dislikes: doc.data().dislikes,
+  //         ...doc.data(),
+  //       };
 
-        // transformUndefinedToEmptyArray(currentUser, 'likes')
+  //       // transformUndefinedToEmptyArray(currentUser, 'likes')
 
-        if (user.likes === undefined) {
-          user.likes = [];
-        }
+  //       if (user.likes === undefined) {
+  //         user.likes = [];
+  //       }
 
-        if (user.dislikes === undefined) {
-          user.dislikes = [];
-        }
+  //       if (user.dislikes === undefined) {
+  //         user.dislikes = [];
+  //       }
 
-        if (currentUser.likes === undefined) {
-          currentUser.likes = [];
-        }
+  //       if (currentUser.likes === undefined) {
+  //         currentUser.likes = [];
+  //       }
 
-        if (currentUser.dislikes === undefined) {
-          currentUser.dislikes = [];
-        }
+  //       if (currentUser.dislikes === undefined) {
+  //         currentUser.dislikes = [];
+  //       }
 
-        if (user.email !== currentUser.email) {
-          console.log("user:", user);
-          console.log("currentUser:", currentUser);
+  //       if (user.email !== currentUser.email) {
+  //         console.log("user:", user);
+  //         console.log("currentUser:", currentUser);
 
-          if (
-            user.lookingFor === currentUser.gender ||
-            user.lookingFor === "both"
-          ) {
-            if (!user.likes.includes(currentUser.email)) {
-              if (!user.dislikes.includes(currentUser.email)) {
-                {
-                  database
-                    .collection("users")
-                    .doc(currentUser.id)
-                    .collection("pictures")
-                    .get()
-                    .then((response) => {
-                      const fetchedPictures: any[] = [];
-                      response.forEach((document) => {
-                        const fetchedPicture = {
-                          id: document.id,
-                          ...document.data(),
-                        };
-                        fetchedPictures.push(fetchedPicture);
-                      });
+  //         if (
+  //           user.lookingFor === currentUser.gender ||
+  //           user.lookingFor === "both"
+  //         ) {
+  //           if (!user.likes.includes(currentUser.email)) {
+  //             if (!user.dislikes.includes(currentUser.email)) {
+  //               {
+  //                 database
+  //                   .collection("users")
+  //                   .doc(currentUser.id)
+  //                   .collection("pictures")
+  //                   .get()
+  //                   .then((response) => {
+  //                     const fetchedPictures: any[] = [];
+  //                     response.forEach((document) => {
+  //                       const fetchedPicture = {
+  //                         id: document.id,
+  //                         ...document.data(),
+  //                       };
+  //                       fetchedPictures.push(fetchedPicture);
+  //                     });
 
-                      currentUser.pictures = fetchedPictures;
-                      // currentUser['pictures'] = fetchedPictures;
+  //                     currentUser.pictures = fetchedPictures;
+  //                     // currentUser['pictures'] = fetchedPictures;
 
-                      if (currentUser.pictures.length > 0) {
-                        setUsers((oldUsers) => {
-                          if (
-                            oldUsers.find(
-                              (user) => user.email === currentUser.email
-                            )
-                          )
-                            return oldUsers;
-                          return [...oldUsers, currentUser];
-                        });
-                      }
-                    })
-                    .catch((error) => {
-                      // setError(error);
-                      console.log(error);
-                    });
-                }
-              }
-            }
-          }
-          // remove user by gender
-          else {
-            setUsers((users) =>
-              users.filter((user) => user.id !== currentUser.id)
-            );
-          }
-        }
-      });
-    });
+  //                     if (currentUser.pictures.length > 0) {
+  //                       setUsers((oldUsers) => {
+  //                         if (
+  //                           oldUsers.find(
+  //                             (user) => user.email === currentUser.email
+  //                           )
+  //                         )
+  //                           return oldUsers;
+  //                         return [...oldUsers, currentUser];
+  //                       });
+  //                     }
+  //                   })
+  //                   .catch((error) => {
+  //                     // setError(error);
+  //                     console.log(error);
+  //                   });
+  //               }
+  //             }
+  //           }
+  //         }
+  //         // remove user by gender
+  //         else {
+  //           setUsers((users) =>
+  //             users.filter((user) => user.id !== currentUser.id)
+  //           );
+  //         }
+  //       } else {
+  //       }
+  //     });
+  //   });
 
-    return () => {
-      // this is the cleanup...
-      unsubscribe();
-    };
+  //   return () => {
+  //     // this is the cleanup...
+  //     unsubscribe();
+  //   };
 
-    // this will run ONCE when the component loads and never again
-  }, [user]);
+  //   // this will run ONCE when the component loads and never again
+  // }, [user]);
 
   const onSwipe = (direction: any, swipedUser: any) => {
     console.log("You swiped: " + direction);

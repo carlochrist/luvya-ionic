@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import {
+  IonAvatar,
   IonButton,
   IonContent,
   IonHeader,
@@ -11,12 +12,13 @@ import {
 } from "@ionic/react";
 import "./Chats.css";
 import { useDispatch, useSelector } from "react-redux";
-import { logoutUser } from "../../firebaseConfig";
+import { database, logoutUser } from "../../firebaseConfig";
 import { useHistory } from "react-router";
 import ExploreContainer from "../../components/ExploreContainer";
 import ChatScreen from "./ChatScreen/ChatScreen";
 import MatchBar from "./MatchBar/MatchBar";
 import { setUserSelectedState, setUserState } from "../../redux/actions";
+import Chat from "./Chat/Chat";
 
 const Chats: React.FC = () => {
   const user = useSelector((state: any) => state.user);
@@ -120,7 +122,188 @@ const Chats: React.FC = () => {
   };
 
   const logUser = () => {
-    console.log(userSelected);
+    console.log(user);
+    console.log(user.chats);
+    setChats(user.chats);
+
+    // --> chats bei User laden setzen
+
+    // console.log(userSelected);
+  };
+
+  // useEffect(() => {
+  //   database.collection("chats").onSnapshot((snapshot) => {
+  //     snapshot.forEach((doc) => {
+  //       const chat = doc.data();
+  //       chat.id = doc.id;
+
+  //       if (chat.userEmail1 === user.email || chat.userEmail2 === user.email) {
+  //         console.log(chat);
+  //       }
+
+  //       // add latest messages to chat
+  //       database
+  //         .collection("chats")
+  //         .doc(chat.id)
+  //         .collection("messages")
+  //         .orderBy("timestamp", "asc")
+  //         .limitToLast(1)
+  //         .get()
+  //         .then((response) => {
+  //           response.forEach((document) => {
+  //             const fetchedMessage = {
+  //               id: document.id,
+  //               ...document.data(),
+  //             };
+  //             chat.messages.push(fetchedMessage);
+  //           });
+  //         });
+  //     });
+  //   });
+  // }, []);
+
+  useEffect(() => {
+    // currentUser === user
+    // add chats to user
+    database.collection("chats").onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        const chat = doc.data();
+        chat.id = doc.id;
+
+        if (chat.userEmail1 === user.email || chat.userEmail2 === user.email) {
+          // console.log(chat);
+
+          // add match-picture to chat
+          database.collection("users").onSnapshot((snapshot) => {
+            snapshot.forEach((doc) => {
+              const currentUserChat = {
+                id: doc.id,
+                email: doc.data().email,
+                pictures: [] as any[],
+                ...doc.data(),
+              };
+
+              let currentUserEmail =
+                chat.userEmail1 === user.email
+                  ? chat.userEmail2
+                  : chat.userEmail1;
+
+              if (currentUserEmail !== user.Email) {
+                database
+                  .collection("users")
+                  .doc(currentUserChat.id)
+                  .collection("pictures")
+                  .orderBy("timestamp", "asc")
+                  .limitToLast(1)
+                  .get()
+                  .then((response) => {
+                    response.forEach((document) => {
+                      const fetchedPicture = {
+                        id: document.id,
+                        ...document.data(),
+                      };
+                      // console.log(fetchedPicture);
+                      chat.pictureMatch = fetchedPicture;
+                      // console.log(chat);
+                      // fetchedPictures.push(fetchedPicture);
+                    });
+                    // currentUser.pictures = fetchedPictures;
+                  });
+              }
+            });
+          });
+
+          // add latest messages to chat
+          database
+            .collection("chats")
+            .doc(chat.id)
+            .collection("messages")
+            .orderBy("timestamp", "asc")
+            .limitToLast(1)
+            .get()
+            .then((response) => {
+              response.forEach((document) => {
+                const fetchedMessage = {
+                  id: document.id,
+                  ...document.data(),
+                };
+                chat.messages.push(fetchedMessage);
+              });
+            });
+
+          if (!user.hasOwnProperty("chats")) {
+            user.chats = [] as any[];
+          }
+
+          let matchedUserEmail = "";
+
+          if (chat.userEmail1 === user.email) {
+            matchedUserEmail = chat.userEmail2;
+          } else {
+            matchedUserEmail = chat.userEmail1;
+          }
+
+          if (
+            !user.chats.find(
+              (chat: any) =>
+                chat.userEmail1 === matchedUserEmail ||
+                chat.userEmail2 === matchedUserEmail
+            )
+          ) {
+            user.chats.push(chat);
+            //setChats(user.chats);
+          }
+
+          console.log(user);
+          // dispatch(setUserState(currentUser));
+        }
+      });
+    });
+  }, [user]);
+
+  const openUserChat = (chat: any) => {
+    console.log(chat);
+
+    let matchedUserEmail =
+      chat.userEmail1 === user.email ? chat.userEmail2 : chat.userEmail1;
+    database.collection("users").onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        const currentUser = {
+          id: doc.id,
+          email: doc.data().email,
+          gender: doc.data().gender,
+          pictures: [] as any[],
+          likes: doc.data().likes,
+          dislikes: doc.data().dislikes,
+          ...doc.data(),
+        };
+
+        if (currentUser.email === matchedUserEmail) {
+          database
+            .collection("users")
+            .doc(currentUser.id)
+            .collection("pictures")
+            .get()
+            .then((response) => {
+              const fetchedPictures: any[] = [];
+              response.forEach((document) => {
+                const fetchedPicture = {
+                  id: document.id,
+                  ...document.data(),
+                };
+                fetchedPictures.push(fetchedPicture);
+              });
+
+              currentUser.pictures = fetchedPictures;
+              dispatch(setUserSelectedState(currentUser));
+            })
+            .catch((error) => {
+              // setError(error);
+              console.log(error);
+            });
+        }
+      });
+    });
   };
 
   return (
@@ -132,21 +315,34 @@ const Chats: React.FC = () => {
         </div>
       ) : (
         <div>
+          <IonButton onClick={logUser}>log</IonButton>
+
           <MatchBar />
-          {/* {chats.map((chat, index) => {
-            return (
-              <div key={chat.id} onClick={() => handleChange(getUser(chat))}>
-                {chat.messages.length > 0 ? (
-                  <Chat
-                    name={getUserName(chat)}
-                    message={getLastMessage(chat)}
-                    timestamp={getLastMessageDatetime(chat)}
-                    profilePic={getUserImage(chat)}
-                  />
-                ) : null}
+
+          {/* <p>{user.chats}</p> */}
+
+          {/* {chats?.map((chat: any, index: number) => (
+            <div key={chat.id}>{chat.id && <p>{chat.id}</p>}</div>
+          ))} */}
+
+          {user?.chats?.map((chat: any) => (
+            <div
+              key={chat.id}
+              className="chat"
+              onClick={() => openUserChat(chat)}
+            >
+              <IonAvatar className="chat__image">
+                <img src={chat.pictureMatch.imageUrl} />
+              </IonAvatar>
+              <div className="chat__details">
+                <h2>{chat.nameMatch}</h2>
+                <p>{chat.messages[0]?.message}</p>
               </div>
-            );
-          })} */}
+              <p className="chat__timestamp">
+                {chat.messages[0]?.timestamp.seconds}
+              </p>
+            </div>
+          ))}
         </div>
       )}
     </IonPage>
@@ -154,3 +350,37 @@ const Chats: React.FC = () => {
 };
 
 export default Chats;
+
+// {user?.map((user: any, index: number) => (
+//   <div>
+//     {/* <p>{chat}</p> */}
+//     <p>{user.id}</p>
+//   </div>
+// ))}
+
+// {user?.chats?.map((chat: any, index: number) => (
+//   <div>
+//     {/* <p>{chat}</p> */}
+//     <p>{index}</p>
+//   </div>
+// ))}
+
+// {user?.chats?.map((chat: any, index: number) => {
+//   return (
+//     <div>
+//       <p>{chat.userEmail1}</p>
+//       <p>{chat.userEmail2}</p>
+//     </div>
+
+//     // <div onClick={() => handleChange(getUser(chat))}>
+//     //   <p>{chat.userEmail1}</p>
+//     //   <p>{chat.userEmail2}</p>
+//     //   {/* <Chat
+//     //     name={getUserName(chat)}
+//     //     message={getLastMessage(chat)}
+//     //     timestamp={getLastMessageDatetime(chat)}
+//     //     profilePic={getUserImage(chat)}
+//     //   /> */}
+//     // </div>
+//   );
+// })}

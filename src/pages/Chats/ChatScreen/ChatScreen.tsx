@@ -6,10 +6,15 @@ import { useDispatch, useSelector } from "react-redux";
 import {
   IonAvatar,
   IonButton,
+  IonCol,
   IonContent,
+  IonFooter,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonInput,
+  IonRow,
+  IonTextarea,
+  IonToolbar,
 } from "@ionic/react";
 import { setUserSelectedState } from "../../../redux/actions";
 
@@ -174,6 +179,7 @@ const ChatScreen: React.FC = () => {
   useEffect(() => {
     database.collection("chats").onSnapshot((snapshot) => {
       snapshot.forEach((doc) => {
+        console.log("test");
         const chat = doc.data();
         chat.id = doc.id;
 
@@ -261,56 +267,57 @@ const ChatScreen: React.FC = () => {
           You matched with {userSelected.username} on XXX
         </div>
       ) : null}
-      <IonContent fullscreen>
+      <IonContent fullscreen className="scrollBar">
         <IonButton onClick={navigateBackToChats}> back </IonButton>
 
         {/* <IonInfiniteScroll>
           <IonInfiniteScrollContent> */}
-        {messages.map((message) =>
-          !checkForOwnMessage(message) ? (
-            <div key={message.id} className="chatScreen__message">
-              <IonAvatar className="chatScreen__image">
-                <img src={userSelected.pictures[0].imageUrl} />
-              </IonAvatar>
-              <p className="chatScreen__text">{message.message.message}</p>
-            </div>
-          ) : (
-            <div key={message.id} className="chatScreen__message">
-              <p className="chatScreen__text__self">
-                {message.message.message}
-              </p>
-            </div>
-          )
-        )}
+        <div className="">
+          {messages.map((message) =>
+            !checkForOwnMessage(message) ? (
+              <div key={message.id} className="chatScreen__message">
+                <IonAvatar className="chatScreen__image">
+                  <img src={userSelected.pictures[0].imageUrl} />
+                </IonAvatar>
+                <p className="chatScreen__text">{message.message.message}</p>
+              </div>
+            ) : (
+              <div key={message.id} className="chatScreen__message">
+                <p className="chatScreen__text__self">
+                  {message.message.message}
+                </p>
+              </div>
+            )
+          )}
+        </div>
+
         {/* </IonInfiniteScrollContent>
         </IonInfiniteScroll> */}
       </IonContent>
-      <div>
-        <form className="chatScreen__input">
-          <IonInput
-            value={input}
-            onIonChange={(e: any) => setInput(e.target.value)}
-            type="text"
-            className="chatScreen__inputField"
-            placeholder="Type a message..."
-          ></IonInput>
+      <form className="chatScreen__input">
+        <IonInput
+          value={input}
+          onIonChange={(e: any) => setInput(e.target.value)}
+          type="text"
+          className="chatScreen__inputField"
+          placeholder="Type a message..."
+        ></IonInput>
 
-          {/* <input
+        {/* <input
             value={input}
             onChange={(e) => setInput(e.target.value)}
             type="text"
             className="chatScreen__inputField"
             placeholder="Type a message..."
           /> */}
-          <button
-            type="submit"
-            onClick={sendMessage}
-            className="chatScreen__inputButton"
-          >
-            SEND
-          </button>
-        </form>
-      </div>
+        <button
+          type="submit"
+          onClick={sendMessage}
+          className="chatScreen__inputButton"
+        >
+          SEND
+        </button>
+      </form>
     </div>
   );
 };
