@@ -19,6 +19,7 @@ import ChatScreen from "./ChatScreen/ChatScreen";
 import MatchBar from "./MatchBar/MatchBar";
 import { setUserSelectedState, setUserState } from "../../redux/actions";
 import Chat from "./Chat/Chat";
+import moment from "moment";
 
 const Chats: React.FC = () => {
   const user = useSelector((state: any) => state.user);
@@ -306,6 +307,16 @@ const Chats: React.FC = () => {
     });
   };
 
+  const showMatchBar = () => {
+    for (let index = 0; index < user.chats.length; index++) {
+      console.log(user.chats[index]);
+      if (user.chats[index].messages.length > 0) {
+        return true;
+      }
+      return false;
+    }
+  };
+
   return (
     <IonPage>
       {/* <IonButton onClick={logUser}></IonButton> */}
@@ -315,9 +326,9 @@ const Chats: React.FC = () => {
         </div>
       ) : (
         <div>
-          <IonButton onClick={logUser}>log</IonButton>
+          {/* <IonButton onClick={logUser}>log</IonButton> */}
 
-          <MatchBar />
+          {{ showMatchBar } ? <MatchBar /> : null}
 
           {/* <p>{user.chats}</p> */}
 
@@ -325,24 +336,58 @@ const Chats: React.FC = () => {
             <div key={chat.id}>{chat.id && <p>{chat.id}</p>}</div>
           ))} */}
 
-          {user?.chats?.map((chat: any) => (
-            <div
-              key={chat.id}
-              className="chat"
-              onClick={() => openUserChat(chat)}
-            >
-              <IonAvatar className="chat__image">
-                <img src={chat.pictureMatch.imageUrl} />
-              </IonAvatar>
-              <div className="chat__details">
-                <h2>{chat.nameMatch}</h2>
-                <p>{chat.messages[0]?.message}</p>
-              </div>
-              <p className="chat__timestamp">
-                {chat.messages[0]?.timestamp.seconds}
-              </p>
-            </div>
-          ))}
+          {user?.chats?.map((chat: any) => {
+            if (chat.messages.length > 0) {
+              return (
+                <div
+                  key={chat.id}
+                  className="chat"
+                  onClick={() => openUserChat(chat)}
+                >
+                  <IonAvatar className="chat__image">
+                    <img src={chat.pictureMatch.imageUrl} />
+                  </IonAvatar>
+                  <div className="chat__details">
+                    <h2>{chat.nameMatch}</h2>
+                    <p>{chat.messages[0]?.message}</p>
+                  </div>
+                  {/* <p className="chat__timestamp">
+                    {new Intl.DateTimeFormat("en-US", {
+                      year: "numeric",
+                      month: "2-digit",
+                      day: "2-digit",
+                      hour: "2-digit",
+                      minute: "2-digit",
+                      second: "2-digit",
+                    }).format(chat.messages[0]?.timestamp.seconds)}
+                  </p> */}
+                  {moment(
+                    new Date(chat.messages[0]?.timestamp.seconds * 1000)
+                  ).format("HH:MM DD/MM/YYYY")}
+                </div>
+              );
+            }
+          })}
+
+          {/* {user?.chats?.map((chat: any) => (
+
+<div
+  key={chat.id}
+  className="chat"
+  onClick={() => openUserChat(chat)}
+>
+  <IonAvatar className="chat__image">
+    <img src={chat.pictureMatch.imageUrl} />
+  </IonAvatar>
+  <div className="chat__details">
+    <h2>{chat.nameMatch}</h2>
+    <p>{chat.messages[0]?.message}</p>
+  </div>
+  <p className="chat__timestamp">
+    {chat.messages[0]?.timestamp.seconds}
+  </p>
+</div>
+))} */}
         </div>
       )}
     </IonPage>
