@@ -244,23 +244,25 @@ const Chats: React.FC = () => {
             matchedUserEmail = chat.userEmail1;
           }
 
-          if (
-            !user.chats.find(
-              (chat: any) =>
-                chat.userEmail1 === matchedUserEmail ||
-                chat.userEmail2 === matchedUserEmail
-            )
-          ) {
-            user.chats.push(chat);
-            //setChats(user.chats);
+          if (user.chats !== undefined) {
+            if (
+              !user.chats.find(
+                (chat: any) =>
+                  chat.userEmail1 === matchedUserEmail ||
+                  chat.userEmail2 === matchedUserEmail
+              )
+            ) {
+              user.chats.push(chat);
+              //setChats(user.chats);
+            }
           }
 
-          console.log(user);
+          // console.log(user);
           // dispatch(setUserState(currentUser));
         }
       });
     });
-  }, [user]);
+  }, [user.chats]);
 
   const openUserChat = (chat: any) => {
     console.log(chat);
@@ -327,7 +329,7 @@ const Chats: React.FC = () => {
       ) : (
         <div>
           {/* <IonButton onClick={logUser}>log</IonButton> */}
-
+          <h6 style={{ color: "red" }}>New Matches</h6>
           {{ showMatchBar } ? <MatchBar /> : null}
 
           {/* <p>{user.chats}</p> */}
@@ -335,7 +337,7 @@ const Chats: React.FC = () => {
           {/* {chats?.map((chat: any, index: number) => (
             <div key={chat.id}>{chat.id && <p>{chat.id}</p>}</div>
           ))} */}
-
+          <h6 style={{ color: "red" }}>Messages</h6>
           {user?.chats?.map((chat: any) => {
             if (chat.messages.length > 0) {
               return (
@@ -363,7 +365,7 @@ const Chats: React.FC = () => {
                   </p> */}
                   {moment(
                     new Date(chat.messages[0]?.timestamp.seconds * 1000)
-                  ).format("HH:MM DD/MM/YYYY")}
+                  ).format("DD/MM/YYYY HH:MM")}
                 </div>
               );
             }

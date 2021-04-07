@@ -31,7 +31,7 @@ const ChatScreen: React.FC = () => {
     e.preventDefault();
 
     database.collection("chats").onSnapshot((snapshot) => {
-      snapshot.forEach((doc) => {
+      snapshot.forEach(async (doc) => {
         const chat = doc.data();
 
         chat.id = doc.id;
@@ -43,18 +43,72 @@ const ChatScreen: React.FC = () => {
         ) {
           console.log(chat);
 
-          database.collection("chats").doc(chat.id).collection("messages").add({
+          let messageObj = {
             message: input,
             timestamp: firebase.firestore.FieldValue.serverTimestamp(),
             userEmail: user.email,
             username: user.username,
+          };
+
+          console.log(messageObj);
+          console.log(firebase.firestore.FieldValue.serverTimestamp());
+
+          database.collection("chats").doc(chat.id).collection("messages").add({
+            message: messageObj.message,
+            timestamp: messageObj.timestamp,
+            userEmail: messageObj.userEmail,
+            username: messageObj.username,
           });
+
+          // await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 sec
+
+          // update latest message
+
+          // database.collection("chats").onSnapshot((snapshot) => {
+          //   snapshot.forEach((doc) => {
+          //     const chat2 = doc.data();
+
+          //     chat.id = doc.id;
+          //     if (chat.id === chat2.id) {
+          //       user.chats.filter(
+          //         (chatFilter: { id: any }) => chatFilter.id === chat.id
+          //       )[0].messages[0] = chat2;
+          //     }
+          //   });
+          // });
+
+          // user.chats.filter(
+          //   (chatFilter: { id: any }) => chatFilter.id === chat.id
+          // )[0].messages[0] = messageObj;
+
+          console.log(user);
+
           // setMessages([...messages, { message: input }]);
         }
       });
     });
 
     setInput("");
+  };
+
+  const navigateBackToChats = () => {
+    console.log(user);
+    console.log(userSelected);
+
+    // database.collection("chats").onSnapshot((snapshot) => {
+    //   snapshot.forEach((doc) => {
+    //     const chat2 = doc.data();
+
+    //     chat.id = doc.id;
+    //     if (chat.id === chat2.id) {
+    //       user.chats.filter(
+    //         (chatFilter: { id: any }) => chatFilter.id === chat.id
+    //       )[0].messages[0] = chat2;
+    //     }
+    //   });
+    // });
+
+    dispatch(setUserSelectedState(null));
   };
 
   // const getMatchUsername = () => {
@@ -243,11 +297,6 @@ const ChatScreen: React.FC = () => {
   // const logData = () => {
   //   console.log(chat);
   // };
-
-  const navigateBackToChats = () => {
-    console.log(userSelected);
-    dispatch(setUserSelectedState(null));
-  };
 
   return (
     <div className="chatScreen">

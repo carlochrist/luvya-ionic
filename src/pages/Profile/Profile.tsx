@@ -64,6 +64,7 @@ const Profile: React.FC = () => {
 
   async function logout() {
     setBusy(true);
+    setUserState(null);
     await logoutUser();
     history.replace("/");
     setBusy(false);
@@ -225,6 +226,20 @@ const Profile: React.FC = () => {
 
     // await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 sec
 
+    // database.collection("users").doc(user.id).set(
+    //   {
+    //     gender: user.gender,
+    //     lookingFor: user.lookingFor,
+    //     hereFor: user.hereFor,
+    //     username: user.username,
+    //     // likes: user.likes,
+    //     // dislikes: user.dislikes,
+    //   },
+    //   { merge: true }
+    // );
+  };
+
+  const saveData = () => {
     database.collection("users").doc(user.id).set(
       {
         gender: user.gender,
@@ -373,7 +388,8 @@ const Profile: React.FC = () => {
             </IonList>
           </form>
 
-          <IonButton onClick={log}>log</IonButton>
+          {/* <IonButton onClick={log}>log</IonButton> */}
+          {/* <IonButton onClick={saveData}>Save</IonButton> */}
           <IonButton onClick={logout}>logout</IonButton>
         </IonContent>
       ) : null}

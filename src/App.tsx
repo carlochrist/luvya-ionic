@@ -48,7 +48,7 @@ import "@ionic/react/css/display.css";
 import "./theme/variables.css";
 import MatchGame from "./pages/MatchGame/MatchGame";
 import { database, getCurrentUser } from "./firebaseConfig";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { setUserState } from "./redux/actions";
 import MainTabs from "./pages/TabRoot/TabRoot";
 import LoginOverview from "./pages/login/loginOverview/LoginOverview";
@@ -74,10 +74,12 @@ const App: React.FC = () => {
   const [busy, setBusy] = useState<Boolean>(false);
   const dispatch = useDispatch();
   const history = useHistory();
+  const user = useSelector((state: any) => state.userSelected);
 
   useEffect(() => {
     console.log("RELOAD APP");
     console.log(getCurrentUser());
+    // setUserState(null)
     if (
       getCurrentUser().then((user: any) => {
         // console.log(user);
@@ -195,6 +197,8 @@ const App: React.FC = () => {
                                                   currentUser.chats.push(chat);
                                                 }
 
+                                                console.log(currentUser);
+
                                                 dispatch(
                                                   setUserState(currentUser)
                                                 );
@@ -260,9 +264,144 @@ const App: React.FC = () => {
     ) {
       // regular login
     }
-  }, []);
+  }, [user]);
+
+  // const dispatch = useDispatch();
 
   return <IonApp>{busy ? <IonSpinner /> : <RoutingSystem />} </IonApp>;
 };
+
+// export function updateUserData() {
+//   if (
+//     getCurrentUser().then((user: any) => {
+//       if (user) {
+//         // TODO: outsource
+//         database.collection("users").onSnapshot((snapshot) => {
+//           snapshot.forEach((doc) => {
+//             const currentUser = doc.data();
+//             if (user.email === currentUser["email"]) {
+//               currentUser.id = doc.id;
+
+//               if (currentUser.chats === undefined) {
+//                 currentUser.chats = [];
+//               }
+
+//               // setPictures
+//               database
+//                 .collection("users")
+//                 .doc(doc.id)
+//                 .collection("pictures")
+//                 .onSnapshot((snapshot) => {
+//                   let pictures = snapshot.docs.map((doc) => doc.data());
+//                   currentUser.pictures = pictures;
+
+//                   // setChats
+//                   database.collection("chats").onSnapshot((snapshot) => {
+//                     snapshot.forEach((doc) => {
+//                       const chat = doc.data();
+//                       chat.id = doc.id;
+//                       if (
+//                         chat.userEmail1 === currentUser.email ||
+//                         chat.userEmail2 === currentUser.email
+//                       ) {
+//                         // add match-picture to chat
+//                         database.collection("users").onSnapshot((snapshot) => {
+//                           snapshot.forEach((doc) => {
+//                             const currentUserChat = {
+//                               id: doc.id,
+//                               email: doc.data().email,
+//                               pictures: [] as any[],
+//                               username: doc.data().username,
+//                               ...doc.data(),
+//                             };
+
+//                             let matchUserEmail =
+//                               chat.userEmail1 === currentUser.email
+//                                 ? chat.userEmail2
+//                                 : chat.userEmail1;
+
+//                             let matchUserName =
+//                               chat.userEmail1 === currentUser.email
+//                                 ? chat.userName2
+//                                 : chat.userName1;
+
+//                             chat.emailMatch = matchUserEmail;
+//                             chat.nameMatch = matchUserName;
+
+//                             if (currentUserChat.email !== currentUser.email) {
+//                               // add latest messages to chat
+//                               database
+//                                 .collection("chats")
+//                                 .doc(chat.id)
+//                                 .collection("messages")
+//                                 .orderBy("timestamp", "asc")
+//                                 .limitToLast(1)
+//                                 .get()
+//                                 .then((response) => {
+//                                   response.forEach((document) => {
+//                                     const fetchedMessage = {
+//                                       id: document.id,
+//                                       ...document.data(),
+//                                     };
+
+//                                     if (chat.messages.length === 0) {
+//                                       chat.messages.push(fetchedMessage);
+//                                     }
+
+//                                     database
+//                                       .collection("users")
+//                                       .doc(currentUserChat.id)
+//                                       .collection("pictures")
+//                                       // .orderBy("timestamp", "asc")
+//                                       // .limitToLast(1)
+//                                       .get()
+//                                       .then((response) => {
+//                                         response.forEach((document) => {
+//                                           const fetchedPicture = {
+//                                             id: document.id,
+//                                             ...document.data(),
+//                                           };
+
+//                                           if (
+//                                             currentUserChat.email ===
+//                                             matchUserEmail
+//                                           ) {
+//                                             chat.pictureMatch = fetchedPicture;
+
+//                                             if (
+//                                               currentUser.chats
+//                                                 .map(
+//                                                   (chatObj: any) => chatObj.id
+//                                                 )
+//                                                 .indexOf(chat.id) === -1
+//                                             ) {
+//                                               currentUser.chats.push(chat);
+//                                             }
+
+//                                             console.log(currentUser);
+
+//                                             dispatch(setUserState(currentUser));
+//                                           }
+//                                         });
+//                                       });
+//                                   });
+//                                 });
+//                             }
+//                           });
+//                         });
+//                       }
+//                     });
+//                   });
+
+//                   // }
+//                 });
+//             }
+//           });
+//         });
+//       }
+//     })
+//   )
+//     return null;
+// }
 
 export default App;

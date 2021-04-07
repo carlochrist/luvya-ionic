@@ -64,7 +64,7 @@ const MatchBar: React.FC = () => {
             ...doc.data(),
           };
 
-          console.log(currentUser);
+          // console.log(currentUser);
 
           //     currentUser.chats
           //     .map(
@@ -84,19 +84,29 @@ const MatchBar: React.FC = () => {
             user.likes.includes(currentUser.email) &&
             currentUser.likes.includes(user.email)
           ) {
-            console.log(
-              user.chats.map((chatObj: any) => {
-                if (
-                  (chatObj.userEmail1 === currentUser.email ||
-                    chatObj.userEmail2 === currentUser.email) &&
-                  chatObj.messages.length > 0
-                ) {
-                  return false;
-                } else {
-                  return true;
-                }
-              })
-            );
+            console.log(user);
+            // if (!user.hasOwnProperty("chats")) {
+            //   console.log("hier")
+            //   user.chats = [];
+            // }
+
+            if (user.chats === undefined) {
+              user.chats = [];
+            }
+            // console.log(user);
+            // console.log(
+            //   user.chats.map((chatObj: any) => {
+            //     if (
+            //       (chatObj.userEmail1 === currentUser.email ||
+            //         chatObj.userEmail2 === currentUser.email) &&
+            //       chatObj.messages.length > 0
+            //     ) {
+            //       return false;
+            //     } else {
+            //       return true;
+            //     }
+            //   })
+            // );
             if (
               !user.chats
                 .map((chatObj: any) => {
@@ -164,7 +174,7 @@ const MatchBar: React.FC = () => {
     };
 
     // this will run ONCE when the component loads and never again
-  }, [user]);
+  }, [user.chats]);
 
   const logData = () => {
     console.log(matchedUsers);
@@ -180,12 +190,25 @@ const MatchBar: React.FC = () => {
   const logUser = () => {
     console.log(userSelected);
     console.log(user);
+    console.log(matchedUsers);
+  };
+
+  const checkIfAlreadyChattedWithAllMatches = () => {
+    for (let index = 0; index < user.chats.length; index++) {
+      if (user.chats[index].messages.length > 0) {
+        return false;
+      }
+    }
+    return true;
   };
 
   return (
     <div>
-      <IonButton onClick={logUser}>log user</IonButton>
-      <p style={{ textAlign: "center" }}>Matches</p>
+      {/* <IonButton onClick={logUser}>log user</IonButton> */}
+
+      {!{ checkIfAlreadyChattedWithAllMatches } ? (
+        <p style={{ textAlign: "center" }}>Matches</p>
+      ) : null}
 
       <div
         style={{

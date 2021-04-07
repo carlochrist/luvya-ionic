@@ -52,39 +52,46 @@ const Login: React.FC = () => {
         // console.log(userFirebase);
 
         if (user) {
+          if (!loggedIn) {
+            console.log("LOGIN TRIGGERED");
+            if (history.location.pathname === "/login") {
+              history.replace("/main");
+            }
+          }
+
           // hier abgleich
-          database.collection("users").onSnapshot((snapshot) => {
-            snapshot.forEach((doc) => {
-              if (!loggedIn) {
-                console.log("LOGIN TRIGGERED");
+          // database.collection("users").onSnapshot((snapshot) => {
+          //   snapshot.forEach((doc) => {
+          //     if (!loggedIn) {
+          //       console.log("LOGIN TRIGGERED");
 
-                const currentUser = doc.data();
-                if (res.user.email === currentUser["email"]) {
-                  currentUser.id = doc.id;
+          //       const currentUser = doc.data();
+          //       if (res.user.email === currentUser["email"]) {
+          //         currentUser.id = doc.id;
 
-                  // setPictures
-                  database
-                    .collection("users")
-                    .doc(doc.id)
-                    .collection("pictures")
-                    .onSnapshot((snapshot) => {
-                      let pictures = snapshot.docs.map((doc) => doc.data());
-                      currentUser.pictures = pictures;
+          //         // setPictures
+          //         database
+          //           .collection("users")
+          //           .doc(doc.id)
+          //           .collection("pictures")
+          //           .onSnapshot((snapshot) => {
+          //             let pictures = snapshot.docs.map((doc) => doc.data());
+          //             currentUser.pictures = pictures;
 
-                      console.log(currentUser);
+          //             console.log(currentUser);
 
-                      dispatch(setUserState(currentUser));
-                      // if (!Object.keys(user).length) {
-                      if (history.location.pathname === "/login") {
-                        history.replace("/main");
-                      }
-                      // }
-                      // }
-                    });
-                }
-              }
-            });
-          });
+          //             dispatch(setUserState(currentUser));
+          //             // if (!Object.keys(user).length) {
+          //             if (history.location.pathname === "/login") {
+          //               history.replace("/main");
+          //             }
+          //             // }
+          //             // }
+          //           });
+          //       }
+          //     }
+          //   });
+          // });
           toast("You are loggeed in!", 3000);
           // console.log(user);
         } else {

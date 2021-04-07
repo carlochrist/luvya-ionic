@@ -53,7 +53,8 @@ export async function loginUser(username: string, password: string) {
 export async function registerUser(
   username: string,
   password: string,
-  gender: string
+  gender: string,
+  birthday: Date
 ) {
   const email = `${username}@luvya.com`;
 
@@ -66,6 +67,7 @@ export async function registerUser(
           email: email,
           username: "",
           gender: gender,
+          birthday: birthday,
           lookingFor: "",
           hereFor: [],
         });

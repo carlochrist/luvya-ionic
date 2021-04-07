@@ -22,6 +22,7 @@ import { registerUser } from "../../../firebaseConfig";
 const Register: React.FC = () => {
   const [username, setUsername] = useState("");
   const [gender, setGender] = useState("");
+  const [birthday, setBirthday] = useState(new Date());
   const [password, setPassword] = useState("");
   const [cPassword, setCPassword] = useState("");
   const [busy, setBusy] = useState<boolean>(false);
@@ -38,7 +39,7 @@ const Register: React.FC = () => {
       return toast("Username and password are required");
     }
 
-    const res = await registerUser(username, password, gender);
+    const res = await registerUser(username, password, gender, birthday);
 
     setBusy(false);
     if (res) {
@@ -92,6 +93,13 @@ const Register: React.FC = () => {
             ></IonRadio>
           </IonItem>
         </IonRadioGroup>
+
+        <IonInput
+          type="date"
+          placeholder="Birthday"
+          onIonChange={(e: any) => setBirthday(e.target.value)}
+        ></IonInput>
+
         <IonInput
           type="password"
           placeholder="Password"
