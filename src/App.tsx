@@ -55,6 +55,8 @@ import LoginOverview from "./pages/login/loginOverview/LoginOverview";
 import Profile from "./pages/Profile/Profile";
 import TabRoot from "./pages/TabRoot/TabRoot";
 import Chats from "./pages/Chats/Chats";
+import { Plugins } from "@capacitor/core";
+import firebase from "firebase";
 
 const RoutingSystem: React.FC = () => {
   return (
@@ -76,6 +78,24 @@ const App: React.FC = () => {
   const history = useHistory();
   const user = useSelector((state: any) => state.userSelected);
 
+  const { Geolocation } = Plugins;
+
+  const setCurrentPosition = async (user: any) => {
+    const coordinates = await Geolocation.getCurrentPosition();
+    database
+      .collection("users")
+      .doc(user.id)
+      .set(
+        {
+          location: new firebase.firestore.GeoPoint(
+            coordinates.coords.latitude,
+            coordinates.coords.longitude
+          ),
+        },
+        { merge: true }
+      );
+  };
+
   useEffect(() => {
     console.log("RELOAD APP");
     console.log(getCurrentUser());
@@ -87,7 +107,7 @@ const App: React.FC = () => {
           // logged in
           setUserLoggedIn(true);
 
-          console.log(user);
+          // console.log(user);
 
           // TODO: outsource
           database.collection("users").onSnapshot((snapshot) => {
@@ -95,6 +115,8 @@ const App: React.FC = () => {
               const currentUser = doc.data();
               if (user.email === currentUser["email"]) {
                 currentUser.id = doc.id;
+
+                console.log(currentUser);
 
                 if (currentUser.chats === undefined) {
                   currentUser.chats = [];
@@ -108,6 +130,11 @@ const App: React.FC = () => {
                   .onSnapshot((snapshot) => {
                     let pictures = snapshot.docs.map((doc) => doc.data());
                     currentUser.pictures = pictures;
+
+                    // add location
+                    setCurrentPosition(currentUser);
+
+                    dispatch(setUserState(currentUser));
 
                     // setChats
                     database.collection("chats").onSnapshot((snapshot) => {
@@ -197,8 +224,6 @@ const App: React.FC = () => {
                                                   currentUser.chats.push(chat);
                                                 }
 
-                                                console.log(currentUser);
-
                                                 dispatch(
                                                   setUserState(currentUser)
                                                 );
@@ -234,7 +259,7 @@ const App: React.FC = () => {
                           //   //setChats(user.chats);
                           // }
 
-                          console.log(user);
+                          // console.log(user);
                           // dispatch(setUserState(currentUser));
                         }
                       });

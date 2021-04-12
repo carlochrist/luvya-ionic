@@ -1,0 +1,7 @@
+<?xml version='1.0' encoding='utf-8'?>
+<resources>
+    <string name="app_name">luvya-ionic</string>
+    <string name="title_activity_main">luvya-ionic</string>
+    <string name="package_name">com.example.luvya</string>
+    <string name="custom_url_scheme">com.example.luvya</string>
+</resources>

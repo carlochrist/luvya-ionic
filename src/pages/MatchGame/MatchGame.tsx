@@ -29,6 +29,8 @@ import { setUserMatchedState, setUserState } from "../../redux/actions";
 import MatchModal from "./MatchModal";
 import moment from "moment";
 import Chats from "../Chats/Chats";
+import { Plugins } from "@capacitor/core";
+import * as geolib from "geolib";
 
 const MatchGame: React.FC = () => {
   const username = useSelector((state: any) => state.user.username);
@@ -44,11 +46,71 @@ const MatchGame: React.FC = () => {
   const log = () => {
     console.log(user);
     console.log(users);
+    console.log(getCurrentPosition());
   };
 
   //   const transformUndefinedToEmptyArray = (obj, keyToTransform) => {
   // obj[keyToTransform] = [];
   //   };
+
+  const { Geolocation } = Plugins;
+
+  const getCurrentPosition = async () => {
+    const coordinates = await Geolocation.getCurrentPosition();
+    console.log("Current", coordinates);
+
+    let myCords = {
+      latitude: coordinates.coords.latitude,
+      longitude: coordinates.coords.longitude,
+    };
+
+    let distance = Math.round(
+      geolib.getDistance(myCords, {
+        latitude: 51.525,
+        longitude: 7.4575,
+      }) / 1000
+    );
+
+    console.log("You are ", distance, "km away from 51.525, 7.4575");
+    return distance;
+  };
+
+  const watchPosition = () => {
+    const wait = Geolocation.watchPosition({}, (position, err) => {});
+  };
+
+  const getDistance = (userCard: any) => {
+    let distance = "";
+
+    if (userCard.location !== undefined) {
+      let myCords = {
+        latitude: user.location.latitude,
+        longitude: user.location.longitude,
+      };
+
+      let userCardCords = {
+        latitude: userCard.location.latitude,
+        longitude: userCard.location.longitude,
+      };
+
+      distance = Math.round(
+        geolib.getDistance(myCords, userCardCords) / 1000
+      ).toString();
+    }
+
+    // console.log(user);
+    // console.log(user.location);
+    // console.log(userCard.location);
+    // console.log(myCords);
+    // console.log(userCardCords);
+    // console.log(distance);
+
+    // let distance = Math.round(
+    //   geolib.getDistance(user.location, userCard.location) / 1000
+    // );
+
+    return distance;
+  };
 
   useEffect(() => {
     const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
@@ -262,7 +324,7 @@ const MatchGame: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        {/* <IonButton onClick={log}>log</IonButton> */}
+        <IonButton onClick={log}>log</IonButton>
         {/* <IonButton onClick={() => setShowMatchModal(true)}>showModal</IonButton> */}
 
         <IonModal isOpen={showMatchModal} swipeToClose={true}>
@@ -304,8 +366,9 @@ const MatchGame: React.FC = () => {
                           textShadow: "3px 3px 3px #000000",
                         }}
                       >
-                        <b> {user.username} </b>
+                        <b> {user.username}, </b>
                         {moment().diff(user.birthday, "years", false)}
+                        <p> {getDistance(user)} km away</p>
                       </h3>
 
                       {/* <p>{index}</p> */}

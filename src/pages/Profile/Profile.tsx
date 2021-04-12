@@ -64,8 +64,8 @@ const Profile: React.FC = () => {
 
   async function logout() {
     setBusy(true);
-    setUserState(null);
     await logoutUser();
+    setUserState(null);
     history.replace("/");
     setBusy(false);
   }
