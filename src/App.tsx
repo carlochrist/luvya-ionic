@@ -132,7 +132,7 @@ const App: React.FC = () => {
                     currentUser.pictures = pictures;
 
                     // add location
-                    setCurrentPosition(currentUser);
+                    // setCurrentPosition(currentUser);
 
                     dispatch(setUserState(currentUser));
 
@@ -174,62 +174,116 @@ const App: React.FC = () => {
                                 if (
                                   currentUserChat.email !== currentUser.email
                                 ) {
-                                  // add latest messages to chat
+                                  // add picture
                                   database
-                                    .collection("chats")
-                                    .doc(chat.id)
-                                    .collection("messages")
-                                    .orderBy("timestamp", "asc")
-                                    .limitToLast(1)
+                                    .collection("users")
+                                    .doc(currentUserChat.id)
+                                    .collection("pictures")
+                                    // .orderBy("timestamp", "asc")
+                                    // .limitToLast(1)
                                     .get()
                                     .then((response) => {
                                       response.forEach((document) => {
-                                        const fetchedMessage = {
+                                        const fetchedPicture = {
                                           id: document.id,
                                           ...document.data(),
                                         };
 
-                                        if (chat.messages.length === 0) {
-                                          chat.messages.push(fetchedMessage);
-                                        }
+                                        if (
+                                          currentUserChat.email ===
+                                          matchUserEmail
+                                        ) {
+                                          // console.log(chat);
+                                          // console.log(fetchedPicture);
 
-                                        database
-                                          .collection("users")
-                                          .doc(currentUserChat.id)
-                                          .collection("pictures")
-                                          // .orderBy("timestamp", "asc")
-                                          // .limitToLast(1)
-                                          .get()
-                                          .then((response) => {
-                                            response.forEach((document) => {
-                                              const fetchedPicture = {
-                                                id: document.id,
-                                                ...document.data(),
-                                              };
+                                          chat.pictureMatch = fetchedPicture;
 
-                                              if (
-                                                currentUserChat.email ===
-                                                matchUserEmail
-                                              ) {
-                                                chat.pictureMatch = fetchedPicture;
+                                          if (
+                                            currentUser.chats
+                                              .map((chatObj: any) => chatObj.id)
+                                              .indexOf(chat.id) === -1
+                                          ) {
+                                            currentUser.chats.push(chat);
+                                          }
 
-                                                if (
-                                                  currentUser.chats
-                                                    .map(
-                                                      (chatObj: any) =>
-                                                        chatObj.id
-                                                    )
-                                                    .indexOf(chat.id) === -1
-                                                ) {
-                                                  currentUser.chats.push(chat);
-                                                }
+                                          // console.log(currentUser);
+                                          // console.log(currentUser.chats);
+                                          // console.log(currentUser.chats.length);
+
+                                          database
+                                            .collection("chats")
+                                            .doc(chat.id)
+                                            .collection("messages")
+                                            .orderBy("timestamp", "asc")
+                                            .limitToLast(1)
+                                            .get()
+                                            .then((response) => {
+                                              response.forEach((document) => {
+                                                const fetchedMessage = {
+                                                  id: document.id,
+                                                  ...document.data(),
+                                                };
+
+                                                // console.log(chat);
+
+                                                chat.messages.push(
+                                                  fetchedMessage
+                                                );
 
                                                 dispatch(
                                                   setUserState(currentUser)
                                                 );
-                                              }
+                                              });
                                             });
-                                          });
+
+                                          // console.log(chat);
+
+                                          // for (
+                                          //   let index = 0;
+                                          //   index < currentUser.chats.length;
+                                          //   index++
+                                          // ) {
+                                          //   if (
+                                          //     currentUser.chats[index].messages
+                                          //       .length > 0
+                                          //   ) {
+                                          //     console.log(
+                                          //       currentUser.chats[index]
+                                          //     );
+                                          //   }
+                                          // }
+
+                                          if (chat.messages.length === 0) {
+                                            // dispatch(setUserState(currentUser));
+                                          } else {
+                                            // add latest messages to chat
+                                            // database
+                                            //   .collection("chats")
+                                            //   .doc(chat.id)
+                                            //   .collection("messages")
+                                            //   .orderBy("timestamp", "asc")
+                                            //   .limitToLast(1)
+                                            //   .get()
+                                            //   .then((response) => {
+                                            //     response.forEach((document) => {
+                                            //       const fetchedMessage = {
+                                            //         id: document.id,
+                                            //         ...document.data(),
+                                            //       };
+                                            //       console.log(chat);
+                                            //       chat.messages.push(
+                                            //         fetchedMessage
+                                            //       );
+                                            //       dispatch(
+                                            //         setUserState(currentUser)
+                                            //       );
+                                            //     });
+                                            //   });
+                                          }
+
+                                          // console.log("APP.TSX USER");
+                                          // console.log(currentUser);
+                                        }
                                       });
                                     });
                                 }

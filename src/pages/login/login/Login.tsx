@@ -15,6 +15,8 @@ import { toast } from "../../../toast";
 import { Link, useHistory } from "react-router-dom";
 import { setLoggedInState, setUserState } from "../../../redux/actions";
 import { useDispatch, useSelector } from "react-redux";
+import { Plugins } from "@capacitor/core";
+import firebase from "firebase";
 
 interface UserData {
   email: string;
@@ -43,6 +45,24 @@ const Login: React.FC = () => {
     setBusy(true);
     const res: any = await loginUser(username, password);
 
+    const { Geolocation } = Plugins;
+
+    const setCurrentPosition = async (user: any) => {
+      const coordinates = await Geolocation.getCurrentPosition();
+      database
+        .collection("users")
+        .doc(user.id)
+        .set(
+          {
+            location: new firebase.firestore.GeoPoint(
+              coordinates.coords.latitude,
+              coordinates.coords.longitude
+            ),
+          },
+          { merge: true }
+        );
+    };
+
     if (res) {
       // console.log(res);
       // console.log(res.user);
@@ -54,6 +74,22 @@ const Login: React.FC = () => {
         if (user) {
           if (!loggedIn) {
             console.log("LOGIN TRIGGERED");
+
+            database.collection("users").onSnapshot((snapshot) => {
+              snapshot.forEach((doc) => {
+                if (!loggedIn) {
+                  const currentUser = doc.data();
+                  if (res.user.email === currentUser["email"]) {
+                    console.log("LOCATION TRIGGERED");
+                    currentUser.id = doc.id;
+                    // add location
+                    console.log("set location!");
+                    setCurrentPosition(currentUser);
+                  }
+                }
+              });
+            });
+
             if (history.location.pathname === "/login") {
               history.replace("/main");
             }

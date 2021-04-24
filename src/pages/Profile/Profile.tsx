@@ -281,7 +281,9 @@ const Profile: React.FC = () => {
 
           <div>
             {/* <IonInput type= onClick={handleTakePhoto}>Take/Select Photo</IonButton> */}
-            <IonButton onClick={handleTakePhoto}>Take/Select Photo</IonButton>
+            <IonButton expand="block" onClick={handleTakePhoto}>
+              Take/Select Photo
+            </IonButton>
           </div>
           {/* <!-- the toast for errors --> */}
           <IonToast
@@ -358,7 +360,7 @@ const Profile: React.FC = () => {
 
             <IonList lines="full">
               <IonListHeader>
-                <IonLabel>HereFor</IonLabel>
+                <IonLabel>Here for</IonLabel>
               </IonListHeader>
 
               <IonItem>
@@ -375,7 +377,7 @@ const Profile: React.FC = () => {
                   value="acquaintances"
                   onClick={updateUserData}
                 />
-                <IonLabel>bla</IonLabel>
+                <IonLabel>Acquaintances</IonLabel>
               </IonItem>
               <IonItem>
                 <IonCheckbox
@@ -383,14 +385,18 @@ const Profile: React.FC = () => {
                   value="dates"
                   onClick={updateUserData}
                 />
-                <IonLabel>blabla</IonLabel>
+                <IonLabel>Dates</IonLabel>
               </IonItem>
             </IonList>
           </form>
 
           {/* <IonButton onClick={log}>log</IonButton> */}
-          {/* <IonButton onClick={saveData}>Save</IonButton> */}
-          <IonButton onClick={logout}>logout</IonButton>
+          <IonButton expand="block" onClick={saveData}>
+            Save
+          </IonButton>
+          <IonButton expand="block" onClick={logout}>
+            logout
+          </IonButton>
         </IonContent>
       ) : null}
     </IonPage>

@@ -241,8 +241,6 @@ const MatchGame: React.FC = () => {
           currentUser.id === swipedUser.id &&
           !user.likes.includes(currentUser.email)
         ) {
-          console.log("hier");
-
           if (direction === "left" || direction === "right") {
             if (direction === "left") {
               if (!user.dislikes.includes(currentUser.email)) {
@@ -317,19 +315,28 @@ const MatchGame: React.FC = () => {
   };
 
   return (
-    <IonPage>
+    <IonPage
+    // style={{
+    //   backgroundColor: "red",
+    // }}
+    >
       <IonHeader>
         <IonToolbar>
           <IonTitle>MatchGame</IonTitle>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
-        <IonButton onClick={log}>log</IonButton>
+        {/* <IonButton onClick={log}>log</IonButton> */}
         {/* <IonButton onClick={() => setShowMatchModal(true)}>showModal</IonButton> */}
 
         <IonModal isOpen={showMatchModal} swipeToClose={true}>
           <MatchModal></MatchModal>
-          <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "space-around",
+            }}
+          >
             <IonButton onClick={() => setShowMatchModal(false)}>
               Continue swiping
             </IonButton>
@@ -343,38 +350,38 @@ const MatchGame: React.FC = () => {
         </MyModal> */}
         </IonModal>
 
-        <div className="matchGame__outerCardContainer">
+        <div className="cardContainer">
           {users.map((user, index) => (
-            <div key={user.id} className="matchGame__innerCardContainer">
+            <div key={user.id} className="swipe">
               {user.pictures && (
-                <div className="swipe">
-                  <TinderCard
-                    key={user.username}
-                    preventSwipe={["up", "down"]}
-                    onSwipe={(dir) => onSwipe(dir, user)}
+                <TinderCard
+                  key={user.username}
+                  preventSwipe={["up", "down"]}
+                  onSwipe={(dir) => onSwipe(dir, user)}
+                >
+                  <div
+                    className="card"
+                    style={{
+                      backgroundImage: `url(${user.pictures[0].imageUrl})`,
+                      position: index === 0 ? "relative" : "relative",
+                      height: "55vh",
+                      marginLeft: "3vw",
+                    }}
                   >
-                    <div
+                    <h3
                       style={{
-                        backgroundImage: `url(${user.pictures[0].imageUrl})`,
-                        position: index === 0 ? "relative" : "relative",
+                        color: "white",
+                        textShadow: "3px 3px 3px #000000",
                       }}
-                      className="card"
                     >
-                      <h3
-                        style={{
-                          color: "white",
-                          textShadow: "3px 3px 3px #000000",
-                        }}
-                      >
-                        <b> {user.username}, </b>
-                        {moment().diff(user.birthday, "years", false)}
-                        <p> {getDistance(user)} km away</p>
-                      </h3>
+                      <b> {user.username}, </b>
+                      {moment().diff(user.birthday, "years", false)}
+                      {user.location && <p> {getDistance(user)} km away</p>}
+                    </h3>
 
-                      {/* <p>{index}</p> */}
-                    </div>
-                  </TinderCard>
-                </div>
+                    {/* <p>{index}</p> */}
+                  </div>
+                </TinderCard>
               )}
             </div>
           ))}

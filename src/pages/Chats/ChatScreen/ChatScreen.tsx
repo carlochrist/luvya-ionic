@@ -22,7 +22,7 @@ const ChatScreen: React.FC = () => {
   const [input, setInput] = useState("");
   // const [chat, setChat] = useState(null);
   const [messages, setMessages] = useState([] as any[]);
-  const [messagesSent, setMessagesSent] = useState(false);
+  const [noMessagesSent, setNoMessagesSent] = useState(false);
   const user = useSelector((state: any) => state.user);
   const userSelected = useSelector((state: any) => state.userSelected);
   const dispatch = useDispatch();
@@ -257,7 +257,7 @@ const ChatScreen: React.FC = () => {
 
               // messages found
               if (snapshot.docs.length > 0) {
-                setMessagesSent(true);
+                setNoMessagesSent(false);
               }
 
               setMessages(
@@ -300,9 +300,7 @@ const ChatScreen: React.FC = () => {
 
   return (
     <div className="chatScreen">
-      <IonButton onClick={navigateBackToChats}> back </IonButton>
-      chatscreen
-      {!messagesSent ? (
+      {noMessagesSent ? (
         <div className="chatScreen__timestamp">
           <IonAvatar
             style={{

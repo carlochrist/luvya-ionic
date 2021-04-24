@@ -44,146 +44,186 @@ const MatchBar: React.FC = () => {
 
   useEffect(() => {
     // console.log(getCurrentUser());
+    console.log(user);
 
-    const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
-      snapshot.forEach((doc) => {
-        // console.log(user);
-        if (!Object.keys(user).length) {
-          // if (history.location.pathname === "/login") {
-          //   history.replace("/main");
-          // }
-          history.replace("/main/matchgame");
-        } else {
-          const currentUser = {
-            id: doc.id,
-            email: doc.data().email,
-            gender: doc.data().gender,
-            pictures: [] as any[],
-            likes: doc.data().likes,
-            dislikes: doc.data().dislikes,
-            ...doc.data(),
-          };
+    // const unsubscribe = database.collection("users").onSnapshot((snapshot) => {
+    //   snapshot.forEach((doc) => {
+    //     // console.log(user);
+    //     if (!Object.keys(user).length) {
+    //       // if (history.location.pathname === "/login") {
+    //       //   history.replace("/main");
+    //       // }
+    //       history.replace("/main/matchgame");
+    //     } else {
+    //       const currentUser = {
+    //         id: doc.id,
+    //         email: doc.data().email,
+    //         gender: doc.data().gender,
+    //         pictures: [] as any[],
+    //         likes: doc.data().likes,
+    //         dislikes: doc.data().dislikes,
+    //         ...doc.data(),
+    //       };
 
-          // console.log(currentUser);
+    //       // console.log(currentUser);
 
-          //     currentUser.chats
-          //     .map(
-          //       (chatObj: any) =>
-          //         chatObj.id
-          //     )
-          //     .indexOf(chat.id) === -1
-          // ) {
-          //   currentUser.chats.push(chat);
-          // }
+    //       //     currentUser.chats
+    //       //     .map(
+    //       //       (chatObj: any) =>
+    //       //         chatObj.id
+    //       //     )
+    //       //     .indexOf(chat.id) === -1
+    //       // ) {
+    //       //   currentUser.chats.push(chat);
+    //       // }
 
-          // user.chats.map((chatObj: any) => chatObj.userEmail1 === currentUser.email ||
-          //       chatObj.userEmail2 === currentUser.email)
+    //       // user.chats.map((chatObj: any) => chatObj.userEmail1 === currentUser.email ||
+    //       //       chatObj.userEmail2 === currentUser.email)
 
-          if (
-            currentUser.email != user.email &&
-            user.likes.includes(currentUser.email) &&
-            currentUser.likes.includes(user.email)
-          ) {
-            console.log(user);
-            // if (!user.hasOwnProperty("chats")) {
-            //   console.log("hier")
-            //   user.chats = [];
-            // }
+    //       if (
+    //         currentUser.email != user.email &&
+    //         user.likes.includes(currentUser.email) &&
+    //         currentUser.likes.includes(user.email)
+    //       ) {
+    //         console.log(user);
+    //         // if (!user.hasOwnProperty("chats")) {
+    //         //   console.log("hier")
+    //         //   user.chats = [];
+    //         // }
 
-            if (user.chats === undefined) {
-              user.chats = [];
-            }
-            // console.log(user);
-            // console.log(
-            //   user.chats.map((chatObj: any) => {
-            //     if (
-            //       (chatObj.userEmail1 === currentUser.email ||
-            //         chatObj.userEmail2 === currentUser.email) &&
-            //       chatObj.messages.length > 0
-            //     ) {
-            //       return false;
-            //     } else {
-            //       return true;
-            //     }
-            //   })
-            // );
-            if (
-              !user.chats
-                .map((chatObj: any) => {
-                  if (
-                    (chatObj.userEmail1 === currentUser.email ||
-                      chatObj.userEmail2 === currentUser.email) &&
-                    chatObj.messages.length > 0
-                  ) {
-                    return false;
-                  } else {
-                    return true;
-                  }
-                })
-                .includes(false)
-              // .map((boolElement: any) => boolElement)
-              // .indexOf(false) !== -1
-              // .map((boolElement: any) => {
-              //   if (boolElement === false) return false;
-              // })
-            ) {
-              console.log(user);
-              database
-                .collection("users")
-                .doc(currentUser.id)
-                .collection("pictures")
-                .get()
-                .then((response) => {
-                  const fetchedPictures: any[] = [];
-                  response.forEach((document) => {
-                    const fetchedPicture = {
-                      id: document.id,
-                      ...document.data(),
-                    };
-                    fetchedPictures.push(fetchedPicture);
-                  });
+    //         if (user.chats === undefined) {
+    //           user.chats = [];
+    //         }
+    //         // console.log(user);
+    //         // console.log(
+    //         //   user.chats.map((chatObj: any) => {
+    //         //     if (
+    //         //       (chatObj.userEmail1 === currentUser.email ||
+    //         //         chatObj.userEmail2 === currentUser.email) &&
+    //         //       chatObj.messages.length > 0
+    //         //     ) {
+    //         //       return false;
+    //         //     } else {
+    //         //       return true;
+    //         //     }
+    //         //   })
+    //         // );
+    //         if (
+    //           !user.chats
+    //             .map((chatObj: any) => {
+    //               if (
+    //                 (chatObj.userEmail1 === currentUser.email ||
+    //                   chatObj.userEmail2 === currentUser.email) &&
+    //                 chatObj.messages.length > 0
+    //               ) {
+    //                 return false;
+    //               } else {
+    //                 return true;
+    //               }
+    //             })
+    //             .includes(false)
+    //           // .map((boolElement: any) => boolElement)
+    //           // .indexOf(false) !== -1
+    //           // .map((boolElement: any) => {
+    //           //   if (boolElement === false) return false;
+    //           // })
+    //         ) {
+    //           console.log(user);
+    //           database
+    //             .collection("users")
+    //             .doc(currentUser.id)
+    //             .collection("pictures")
+    //             .get()
+    //             .then((response) => {
+    //               const fetchedPictures: any[] = [];
+    //               response.forEach((document) => {
+    //                 const fetchedPicture = {
+    //                   id: document.id,
+    //                   ...document.data(),
+    //                 };
+    //                 fetchedPictures.push(fetchedPicture);
+    //               });
 
-                  currentUser.pictures = fetchedPictures;
-                  // currentUser['pictures'] = fetchedPictures;
+    //               currentUser.pictures = fetchedPictures;
+    //               // currentUser['pictures'] = fetchedPictures;
 
-                  if (currentUser.pictures.length > 0) {
-                    setMatchedUsers((oldUsers) => {
-                      if (
-                        oldUsers.find(
-                          (user) => user.email === currentUser.email
-                        )
-                      )
-                        return oldUsers;
-                      return [...oldUsers, currentUser];
-                    });
-                  }
-                })
-                .catch((error) => {
-                  // setError(error);
-                  console.log(error);
-                });
-            }
-          }
-        }
-      });
-    });
+    //               if (currentUser.pictures.length > 0) {
+    //                 setMatchedUsers((oldUsers) => {
+    //                   if (
+    //                     oldUsers.find(
+    //                       (user) => user.email === currentUser.email
+    //                     )
+    //                   )
+    //                     // console.log(oldUsers);
+    //                     return oldUsers;
+    //                   return [...oldUsers, currentUser];
+    //                 });
+    //               }
+    //             })
+    //             .catch((error) => {
+    //               // setError(error);
+    //               console.log(error);
+    //             });
+    //         }
+    //       }
+    //     }
+    //   });
+    // });
 
-    return () => {
-      // this is the cleanup...
-      unsubscribe();
-    };
+    // return () => {
+    //   // this is the cleanup...
+    //   unsubscribe();
+    // };
 
     // this will run ONCE when the component loads and never again
   }, [user.chats]);
 
   const logData = () => {
-    console.log(matchedUsers);
+    console.log(user);
+    // console.log(matchedUsers);
   };
 
-  const setUserInChatsComponent = (clickedUser: any) => {
+  const setUserInChatsComponent = (clickedChat: any) => {
     // matchedUsers.onChange(clickedUser);
-    console.log(clickedUser);
-    dispatch(setUserSelectedState(clickedUser));
+    // console.log(clickedChat);
+
+    database.collection("users").onSnapshot((snapshot) => {
+      snapshot.forEach((doc) => {
+        const currentUser = {
+          id: doc.id,
+          email: doc.data().email,
+          gender: doc.data().gender,
+          pictures: [] as any[],
+          chats: [] as any[],
+          likes: doc.data().likes,
+          dislikes: doc.data().dislikes,
+          ...doc.data(),
+        };
+
+        if (currentUser.email !== user.email) {
+          if (
+            currentUser.email === clickedChat.userEmail1 ||
+            currentUser.email === clickedChat.userEmail2
+          ) {
+            // console.log(currentUser);
+
+            // setPictures
+            database
+              .collection("users")
+              .doc(currentUser.id)
+              .collection("pictures")
+              .onSnapshot((snapshot) => {
+                let pictures = snapshot.docs.map((doc) => doc.data());
+                currentUser.pictures = pictures;
+                dispatch(setUserSelectedState(currentUser));
+              });
+          }
+        }
+      });
+    });
+
+    // --> chat auslesen, user finden -->
+    // dispatch(setUserSelectedState(clickedUser));
     // console.log(userSelected);
   };
 
@@ -200,6 +240,14 @@ const MatchBar: React.FC = () => {
       }
     }
     return true;
+  };
+
+  const getUserName = (chat: {
+    userEmail1: any;
+    userName2: any;
+    userName1: any;
+  }) => {
+    return chat.userEmail1 === user.email ? chat.userName2 : chat.userName1;
   };
 
   return (
@@ -219,9 +267,36 @@ const MatchBar: React.FC = () => {
         }}
         className="matchedUsers"
       >
-        {/* matchbar xd
-      <IonButton onClick={logData}>log</IonButton> */}
-        {matchedUsers.map((user: any) => (
+        {/* matchbar xd */}
+        {/* <IonButton onClick={logData}>log</IonButton> */}
+        {/* {user.chats.map((user: any) => (
+          <div>
+            <p>{user.id}</p>
+            <IonAvatar>
+              <img src={user.pictureMatch.imageUrl} />
+            </IonAvatar>
+          </div>
+        ))} */}
+        {user.chats.map((chat: any) => (
+          <div
+            key={chat.id}
+            style={{
+              marginLeft: "10px",
+              marginRight: "10px",
+            }}
+            onClick={() => setUserInChatsComponent(chat)}
+          >
+            {chat.messages.length == 0 && (
+              <div>
+                <IonAvatar>
+                  <img src={chat.pictureMatch.imageUrl} />
+                </IonAvatar>
+                <p>{getUserName(chat)}</p>
+              </div>
+            )}
+          </div>
+        ))}
+        {/* {matchedUsers.map((user: any) => (
           <div
             key={user.id}
             style={{
@@ -237,7 +312,7 @@ const MatchBar: React.FC = () => {
             )}
             <p>{user.username}</p>
           </div>
-        ))}
+        ))} */}
       </div>
     </div>
   );
