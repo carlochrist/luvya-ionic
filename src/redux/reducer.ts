@@ -62,6 +62,24 @@ export default function reducer(
                     }
                 }
             }
+
+            case 'SET_SWIPE_BUTTON_PRESSED_STATE': 
+            if (payload === null) {
+                return {
+                    ...state,
+                    swipeButtonClicked: null
+                }
+            } else {
+                return {
+                    ...state,
+                    swipeButtonClicked: {
+                        name: payload.name
+                    }
+                }
+            }
+
+
+            
             
          
         }

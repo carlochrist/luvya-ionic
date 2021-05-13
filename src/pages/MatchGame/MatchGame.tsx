@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ReactElement, useEffect, useMemo, useState } from "react";
 import {
   IonButton,
   IonContent,
@@ -31,6 +31,7 @@ import moment from "moment";
 import Chats from "../Chats/Chats";
 import { Plugins } from "@capacitor/core";
 import * as geolib from "geolib";
+import { useRef } from "react";
 
 const MatchGame: React.FC = () => {
   const username = useSelector((state: any) => state.user.username);
@@ -39,6 +40,9 @@ const MatchGame: React.FC = () => {
 
   const [busy, setBusy] = useState(false);
   const user = useSelector((state: any) => state.user);
+  const swipeButtonClicked = useSelector(
+    (state: any) => state.swipeButtonClicked
+  );
   const userMatched = useSelector((state: any) => state.userMatched);
   const [users, setUsers] = useState([] as any[]);
   const [showMatchModal, setShowMatchModal] = useState(false);
@@ -214,6 +218,7 @@ const MatchGame: React.FC = () => {
 
   const onSwipe = (direction: any, swipedUser: any) => {
     console.log("You swiped: " + direction);
+    console.log("You swiped USER: ", swipedUser);
 
     // get latest user-version
     database.collection("users").onSnapshot((snapshot) => {
@@ -314,6 +319,114 @@ const MatchGame: React.FC = () => {
     history.replace("/main/chats");
   };
 
+  useEffect(() => {
+    // console.log(swipeButtonClicked?.name);
+    // console.log(users);
+    // console.log(componentRef);
+    // console.log(childRefs);
+
+    console.log(childRefs);
+
+    if (swipeButtonClicked != undefined) {
+      switch (swipeButtonClicked?.name) {
+        case "like":
+          swipe("right");
+          break;
+        case "dislike":
+          swipe("left");
+          break;
+        default:
+      }
+    }
+
+    // childRefs?[index].current.swipe(dir) // Swipe the card!
+
+    // --> onSwipe aufrufen mit links/rechts
+
+    // childRefs[0]?.current?.swipe
+
+    // childRefs[0].current.swipe("right")
+
+    // childRefs[index].current.swipe("right")
+
+    // switch (swipeButtonClicked?.name) {
+    //   case "like":
+    //     onSwipe("right", users[users.length - 1]);
+    //   case "dislike":
+    //     onSwipe("left", users[users.length - 1]);
+
+    // }
+
+    // if (
+    //   swipeButtonClicked.name === "like" ||
+    //   swipeButtonClicked.name === "dislike"
+    // ) {
+    // }
+
+    // onSwipe(swipeButtonClicked)
+  }, [swipeButtonClicked]);
+
+  const inputEl = useRef<HTMLInputElement>(null);
+  const onButtonClick = () => {
+    // strict null checks need us to check if inputEl and current exist.
+    // but once current exists, it is of type HTMLInputElement, thus it
+    // has the method focus! ✅
+    if (inputEl && inputEl.current) {
+      inputEl.current.focus();
+    }
+  };
+
+  const testArray = ["abc", "cdf", "efg"];
+
+  // const tinderCards = useRef<TinderCard>(null)
+
+  // const inputRef = users.map((x) => useRef(null));
+
+  const itemsRef = React.useRef(new WeakMap());
+
+  // inputRef[idx].current.focus();
+
+  const logData = () => {
+    // console.log(myContainer);
+    // console.log(myContainer?.current);
+    console.log(childRefs);
+    console.log(users);
+
+    // console.log(users);
+    // useMemo<any>(
+    //   () =>
+    //     Array(testArray.length)
+    //       .fill(0)
+    //       .map((i) => React.createRef()),
+    //   []
+    // );
+  };
+
+  // await new Promise((resolve) => setTimeout(resolve, 3000)) // 3 sec
+  const childRefs = useMemo<any>(
+    () =>
+      Array(users.length)
+        .fill(0)
+        .map((i) => React.createRef()),
+    [users]
+  );
+
+  // const alreadyRemoved: any[] = [];
+  const [alreadyRemoved, setAlreadyRemoved] = useState(0);
+
+  const swipe = (dir: any) => {
+    console.log("swipe " + dir + " pressed!");
+
+    childRefs[childRefs.length - 1 - alreadyRemoved].current.swipe(dir); // Swipe the card!
+
+    onSwipe(dir, users[users.length - 1 - alreadyRemoved]);
+    setAlreadyRemoved(alreadyRemoved + 1);
+  };
+
+  // await new Promise((resolve) => setTimeout(resolve, 3000)); // 3 sec
+
+  const myContainer = useRef(null);
+
   return (
     <IonPage
     // style={{
@@ -323,12 +436,12 @@ const MatchGame: React.FC = () => {
       <IonHeader>
         <IonToolbar>
           <IonTitle>MatchGame</IonTitle>
+          <button onClick={logData}>log data</button>
         </IonToolbar>
       </IonHeader>
       <IonContent className="ion-padding">
         {/* <IonButton onClick={log}>log</IonButton> */}
         {/* <IonButton onClick={() => setShowMatchModal(true)}>showModal</IonButton> */}
-
         <IonModal isOpen={showMatchModal} swipeToClose={true}>
           <MatchModal></MatchModal>
           <div
@@ -350,28 +463,31 @@ const MatchGame: React.FC = () => {
         </MyModal> */}
         </IonModal>
 
-        <div className="cardContainer">
+        <div className="matchgame__cardContainer">
           {users.map((user, index) => (
-            <div key={user.id} className="swipe">
+            <div key={user.id} className="matchgame__swipe" ref={myContainer}>
               {user.pictures && (
                 <TinderCard
-                  key={user.username}
+                  ref={childRefs[index]}
+                  // key={user.username}
                   preventSwipe={["up", "down"]}
                   onSwipe={(dir) => onSwipe(dir, user)}
                 >
                   <div
-                    className="card"
+                    className="matchgame__card"
                     style={{
                       backgroundImage: `url(${user.pictures[0].imageUrl})`,
+                      // backgroundImage: `url(${user.pictures.imageUrl})`,
                       position: index === 0 ? "relative" : "relative",
-                      height: "55vh",
-                      marginLeft: "3vw",
                     }}
                   >
                     <h3
                       style={{
                         color: "white",
                         textShadow: "3px 3px 3px #000000",
+                        position: "absolute",
+                        bottom: 0,
+                        left: "5%",
                       }}
                     >
                       <b> {user.username}, </b>
@@ -386,10 +502,11 @@ const MatchGame: React.FC = () => {
             </div>
           ))}
         </div>
-
         <IonLoading message="Logging out..." duration={0} isOpen={busy} />
       </IonContent>
-      <div className="swipeButtons">
+
+      <SwipeButtons />
+      {/* <div className="swipeButtons">
         <IonButton className="swipeButtons__repeat" color="warning">
           <IonIcon icon={reloadCircleOutline} />
         </IonButton>
@@ -405,7 +522,7 @@ const MatchGame: React.FC = () => {
         <IonButton className="swipeButtons__lightning" color="tertiary">
           <IonIcon icon={flashOutline} />
         </IonButton>
-      </div>
+      </div> */}
     </IonPage>
   );
 };

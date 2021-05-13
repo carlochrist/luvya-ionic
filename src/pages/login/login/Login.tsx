@@ -64,13 +64,7 @@ const Login: React.FC = () => {
     };
 
     if (res) {
-      // console.log(res);
-      // console.log(res.user);
-
       getCurrentUser().then((userFirebase: any) => {
-        // console.log(user);
-        // console.log(userFirebase);
-
         if (user) {
           if (!loggedIn) {
             console.log("LOGIN TRIGGERED");
@@ -168,7 +162,10 @@ const Login: React.FC = () => {
 
         <div className="ion-text-center">
           <p>
-            New here? <Link to="/register">Register</Link>
+            New here?{" "}
+            <Link to="/register">
+              <b>Register</b>
+            </Link>
           </p>
         </div>
       </IonContent>

@@ -114,8 +114,15 @@ const Register: React.FC = () => {
           Register
         </IonButton>
 
-        <p>
-          Already have an account? <Link to="/login">Login</Link>
+        <p
+          style={{
+            textAlign: "center",
+          }}
+        >
+          Already have an account?
+          <Link to="/login">
+            <b>Login</b>
+          </Link>
         </p>
       </IonContent>
     </IonPage>

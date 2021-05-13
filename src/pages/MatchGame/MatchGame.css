@@ -1,18 +1,16 @@
-.card {
-  /* width: 80vw;
-  height: 100vh;
-  margin-left: 5vw;
-  position: relative; */
-
-
+.matchgame__card {
+  position: relative;
   /* position: absolute; */
-  /* padding: 20px; */
-  /* max-width: 85vw; */
-  /* height: 45vw; */
-  /* border-radius: 20px;
+  width: 600px;
+  padding: 20px;
+  margin-left: 3vw;
+  max-width: 85vw;
+  height: 55vh;
+  border-radius: 20px;
   background-size: cover;
   background-position: center;
-  box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3); */
+  box-shadow: 0px 18px 53px 0px rgba(0, 0, 0, 0.3);
+
 }
 
 .card > h3 {
@@ -50,7 +48,7 @@
   margin-top: 5vh;
 }
 
-.swipe {
+.matchgame__swipe {
   position: absolute;
 }
 
@@ -67,50 +65,4 @@ matchgame__match {
   /* border: "2px solid #000"; */
   /* boxShadow: theme.shadows[5]; */
   /* padding: theme.spacing(2, 4, 3) */
-}
-
-
-.swipe__buttons{
-  position: "absolute";
-  bottom: 0;
-}
-
-
-
-.swipeButtons {
-  position: fixed;
-  bottom: 10vh;
-  width: 100%;
-  display: flex;
-  justify-content: space-evenly;
-}
-
-.swipeButtons .MuiIconButton-root {
-  background-color: white;
-  box-shadow: 0px 10px 53px 0px rgba(0, 0, 0, 0.3) !important;
-}
-
-.swipeButtons__repeat {
-  /* padding: 3vw !important; */
-  color: #f5b748 !important;
-}
-
-.swipeButtons__left {
-  /* padding: 3vw !important; */
-  color: #ec5e6f !important;
-}
-
-.swipeButtons__star {
-  /* padding: 3vw !important; */
-  color: #62b4f9 !important;
-}
-
-.swipeButtons__right {
-  /* padding: 3vw !important; */
-  color: #76e2b3 !important;
-}
-
-.swipeButtons__lightning {
-  /* padding: 3vw !important; */
-  color: #915dd1 !important;
 }

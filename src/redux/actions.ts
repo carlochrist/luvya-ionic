@@ -13,3 +13,7 @@ export const setUserMatchedState = (payload: any) => {
 export const setUserSelectedState = (payload: any) => {
     return {type: 'SET_USER_SELECTED_STATE', payload}
 }
+
+export const setSwipeButtonClicked = (payload: any) => {
+    return {type: 'SET_SWIPE_BUTTON_PRESSED_STATE', payload}
+}

@@ -37,7 +37,13 @@ import firebaseConfig from "../../firebaseConfig";
 import { CameraResultType } from "@capacitor/core";
 import { useCamera, availableFeatures } from "@ionic/react-hooks/camera";
 import { defineCustomElements } from "@ionic/pwa-elements/loader";
-import { setUserState } from "../../redux/actions";
+import {
+  setLoggedInState,
+  setUserMatchedState,
+  setUserSelectedState,
+  setUserState,
+} from "../../redux/actions";
+import { setServers } from "dns";
 
 const Profile: React.FC = () => {
   const username = useSelector((state: any) => state.user.username);
@@ -66,6 +72,9 @@ const Profile: React.FC = () => {
     setBusy(true);
     await logoutUser();
     setUserState(null);
+    setLoggedInState(null);
+    setUserMatchedState(null);
+    setUserSelectedState(null);
     history.replace("/");
     setBusy(false);
   }
@@ -261,7 +270,7 @@ const Profile: React.FC = () => {
         </IonToolbar>
       </IonHeader>
       {Object.keys(user).length !== 0 ? (
-        <IonContent className="ion-padding">
+        <IonContent className="ion-padding background">
           {/* {photo ? (
           <div>
             <pre>{JSON.stringify(photo, null, 2)}</pre>
@@ -405,6 +414,9 @@ const Profile: React.FC = () => {
 
 export default Profile;
 
+function setUserSelectedStateUserState(arg0: null) {
+  throw new Error("Function not implemented.");
+}
 // {/* get loading information from hook and display progress if necessary */}
 // {isLoading && progress && (
 //   <IonProgressBar value={progress.value}></IonProgressBar>

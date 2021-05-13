@@ -254,9 +254,9 @@ const MatchBar: React.FC = () => {
     <div>
       {/* <IonButton onClick={logUser}>log user</IonButton> */}
 
-      {!{ checkIfAlreadyChattedWithAllMatches } ? (
+      {/* {!{ checkIfAlreadyChattedWithAllMatches } ? (
         <p style={{ textAlign: "center" }}>Matches</p>
-      ) : null}
+      ) : null} */}
 
       <div
         style={{
