@@ -329,7 +329,7 @@ const Chats: React.FC = () => {
       ) : (
         <div>
           {/* <IonButton onClick={logUser}>log</IonButton> */}
-          <h6 style={{ color: "red" }}>New Matches</h6>
+          <h6>New Matches</h6>
           {{ showMatchBar } ? <MatchBar /> : null}
 
           {/* <p>{user.chats}</p> */}
@@ -337,7 +337,7 @@ const Chats: React.FC = () => {
           {/* {chats?.map((chat: any, index: number) => (
             <div key={chat.id}>{chat.id && <p>{chat.id}</p>}</div>
           ))} */}
-          <h6 style={{ color: "red" }}>Messages</h6>
+          <h6>Messages</h6>
           {user?.chats?.map((chat: any) => {
             if (chat.messages.length > 0) {
               return (

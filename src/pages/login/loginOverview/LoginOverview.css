@@ -5,7 +5,10 @@
     background: transparent !important
   }
 
-
-  .ion-color-favorite {
-    color: "#FFFFFF";
+  .background__transparent {
+    box-shadow:none !important
   }
+
+  .button {
+    color: black
+}

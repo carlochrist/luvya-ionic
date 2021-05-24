@@ -21,7 +21,7 @@ import {
   IonToast,
   IonToolbar,
 } from "@ionic/react";
-import "./Profile.css";
+import "./Profile.scss";
 import { useDispatch, useSelector } from "react-redux";
 import {
   storage,
@@ -264,11 +264,11 @@ const Profile: React.FC = () => {
 
   return (
     <IonPage>
-      <IonHeader>
+      {/* <IonHeader>
         <IonToolbar>
           <IonTitle>Profile</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </IonHeader> */}
       {Object.keys(user).length !== 0 ? (
         <IonContent className="ion-padding background">
           {/* {photo ? (
@@ -312,8 +312,10 @@ const Profile: React.FC = () => {
             ]}
           />
 
-          <form>
-            <IonItem lines="full">
+          {/* lines="full"  */}
+
+          <form className="backgroundTransparent">
+            <IonItem>
               <IonLabel position="floating">Name</IonLabel>
               <IonInput
                 type="text"

@@ -1,0 +1,50 @@
+/* ion-item::part(native) {
+    background-color: red;
+    color: red
+  } */
+
+/* .IonInput {
+    background: red;
+  } */
+
+  /* ion-content.username {
+    --background: #F00;
+  }
+
+  ion-input.username {
+    --background: #F00;
+  } */
+
+/* Change the white to any color ;) */
+/* input:-webkit-autofill,
+input:-webkit-autofill:hover, 
+input:-webkit-autofill:focus, 
+input:-webkit-autofill:active  {
+    -webkit-box-shadow: 0 0 0 30px #ffffffa9 inset !important;
+}
+
+
+input:-webkit-autofill { 
+    -webkit-background-clip: text;
+} */
+
+
+/* .button {
+    color: black
+} */
+
+input:-webkit-autofill {
+    -webkit-text-fill-color: transparent;
+    transition: background-color 5000s ease-in-out 0s;
+  }
+
+/*Change text in autofill textbox*/
+input:-webkit-autofill
+{
+ -webkit-text-fill-color: rgb(0, 0, 0) !important;
+}
+
+.input__center {
+    text-align: center;
+}
+

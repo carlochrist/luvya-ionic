@@ -9,11 +9,14 @@ import {
   IonCol,
   IonContent,
   IonFooter,
+  IonHeader,
   IonInfiniteScroll,
   IonInfiniteScrollContent,
   IonInput,
+  IonPage,
   IonRow,
   IonTextarea,
+  IonTitle,
   IonToolbar,
 } from "@ionic/react";
 import { setUserSelectedState } from "../../../redux/actions";
@@ -299,48 +302,58 @@ const ChatScreen: React.FC = () => {
   // };
 
   return (
-    <div className="chatScreen">
-      {noMessagesSent ? (
-        <div className="chatScreen__timestamp">
-          <IonAvatar
-            style={{
-              display: "flex",
-              margin: "auto",
-              marginBottom: "10px",
-            }}
+    <IonPage>
+      <IonHeader>
+        <div className="chats__header">
+          <IonButton
+            onClick={navigateBackToChats}
+            className="chats__header__back"
           >
-            <img src={userSelected.pictures[0].imageUrl} />
-          </IonAvatar>
-          You matched with {userSelected.username} on XXX
+            back
+          </IonButton>
+          <div className="chats__header-user">
+            <IonAvatar>
+              <img src={userSelected.pictures[0].imageUrl} />
+            </IonAvatar>
+            <p>{userSelected.username}</p>
+          </div>
         </div>
-      ) : null}
-      <IonContent fullscreen className="scrollBar">
-        <IonButton onClick={navigateBackToChats}> back </IonButton>
+      </IonHeader>
 
-        {/* <IonInfiniteScroll>
-          <IonInfiniteScrollContent> */}
-        <div className="">
-          {messages.map((message) =>
-            !checkForOwnMessage(message) ? (
-              <div key={message.id} className="chatScreen__message">
-                <IonAvatar className="chatScreen__image">
-                  <img src={userSelected.pictures[0].imageUrl} />
-                </IonAvatar>
-                <p className="chatScreen__text">{message.message.message}</p>
-              </div>
-            ) : (
-              <div key={message.id} className="chatScreen__message">
-                <p className="chatScreen__text__self">
-                  {message.message.message}
-                </p>
-              </div>
-            )
-          )}
-        </div>
+      {/* {noMessagesSent ? (
+          <div className="chatScreen__timestamp">
+            <IonAvatar
+              style={{
+                display: "flex",
+                margin: "auto",
+                marginBottom: "10px",
+              }}
+            >
+              <img src={userSelected.pictures[0].imageUrl} />
+            </IonAvatar>
+            You matched with {userSelected.username} on XXX
+          </div>
+        ) : null} */}
 
-        {/* </IonInfiniteScrollContent>
-        </IonInfiniteScroll> */}
-      </IonContent>
+      <div className="chatScreen__scroll">
+        {messages.map((message) =>
+          !checkForOwnMessage(message) ? (
+            <div key={message.id} className="chatScreen__message">
+              <IonAvatar className="chatScreen__image">
+                <img src={userSelected.pictures[0].imageUrl} />
+              </IonAvatar>
+              <p className="chatScreen__text">{message.message.message}</p>
+            </div>
+          ) : (
+            <div key={message.id} className="chatScreen__message">
+              <p className="chatScreen__text__self">
+                {message.message.message}
+              </p>
+            </div>
+          )
+        )}
+      </div>
+
       <form className="chatScreen__input">
         <IonInput
           value={input}
@@ -365,11 +378,37 @@ const ChatScreen: React.FC = () => {
           SEND
         </button>
       </form>
-    </div>
+    </IonPage>
   );
 };
 
 export default ChatScreen;
+
+// <IonContent fullscreen className="scrollBar">
+// {/* <IonInfiniteScroll>
+// <IonInfiniteScrollContent> */}
+// <div className="">
+//   {messages.map((message) =>
+//     !checkForOwnMessage(message) ? (
+//       <div key={message.id} className="chatScreen__message">
+//         <IonAvatar className="chatScreen__image">
+//           <img src={userSelected.pictures[0].imageUrl} />
+//         </IonAvatar>
+//         <p className="chatScreen__text">{message.message.message}</p>
+//       </div>
+//     ) : (
+//       <div key={message.id} className="chatScreen__message">
+//         <p className="chatScreen__text__self">
+//           {message.message.message}
+//         </p>
+//       </div>
+//     )
+//   )}
+// </div>
+
+// {/* </IonInfiniteScrollContent>
+// </IonInfiniteScroll> */}
+// </IonContent>
 
 // {chat.chat.messages.map((message) =>
 //   !checkForOwnMessage(message) ? (

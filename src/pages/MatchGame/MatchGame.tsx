@@ -428,17 +428,13 @@ const MatchGame: React.FC = () => {
   const myContainer = useRef(null);
 
   return (
-    <IonPage
-    // style={{
-    //   backgroundColor: "red",
-    // }}
-    >
-      <IonHeader>
+    <IonPage>
+      {/* <IonHeader>
         <IonToolbar>
           <IonTitle>MatchGame</IonTitle>
-          <button onClick={logData}>log data</button>
         </IonToolbar>
-      </IonHeader>
+      </IonHeader> */}
+
       <IonContent className="ion-padding">
         {/* <IonButton onClick={log}>log</IonButton> */}
         {/* <IonButton onClick={() => setShowMatchModal(true)}>showModal</IonButton> */}
@@ -463,7 +459,12 @@ const MatchGame: React.FC = () => {
         </MyModal> */}
         </IonModal>
 
-        <div className="matchgame__cardContainer">
+        <div
+          className="matchgame__cardContainer"
+          style={{
+            marginTop: "20%",
+          }}
+        >
           {users.map((user, index) => (
             <div key={user.id} className="matchgame__swipe" ref={myContainer}>
               {user.pictures && (

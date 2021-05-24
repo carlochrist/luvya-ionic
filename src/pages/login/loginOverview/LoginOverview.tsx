@@ -37,10 +37,10 @@ const LoginOverview: React.FC = () => {
         </IonCard>
       </IonHeader>
       <IonContent>
-        <IonButton color="primary" expand="full" routerLink="/login">
+        <IonButton className="button" expand="full" routerLink="/login">
           Login
         </IonButton>
-        <IonButton color="secondary" expand="full" routerLink="/register">
+        <IonButton className="button" expand="full" routerLink="/register">
           Register
         </IonButton>
       </IonContent>

@@ -39,3 +39,36 @@ matchgame__match {
   /* boxShadow: theme.shadows[5]; */
   /* padding: theme.spacing(2, 4, 3) */
 }
+
+ion-input{
+  font-size: 10px;
+  --background-focused: black;
+  --color-selected: black;
+  --color: rgb(78, 78, 78);
+  --background: black;
+  // --padding-end: 0px;
+  // --padding-start: 10px;
+  // --padding-bottom: 0px;
+  // --margin-left:0px;
+  // --margin-right:0px;
+  // max-width:100px;
+}
+
+// input:-webkit-autofill {
+//     -webkit-text-fill-color: transparent;
+//     transition: background-color 5000s ease-in-out 0s;
+//   }
+
+/*Change text in autofill textbox*/
+// input:-webkit-autofill
+// {
+//  -webkit-text-fill-color: rgb(0, 0, 0) !important;
+// }
+
+.profile__input {
+  // text-align: center;
+  background-color: black;
+  color:black
+
+}
+

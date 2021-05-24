@@ -122,7 +122,7 @@ const Login: React.FC = () => {
           //     }
           //   });
           // });
-          toast("You are loggeed in!", 3000);
+          // toast("You are loggeed in!", 3000);
           // console.log(user);
         } else {
           history.replace("/main");
@@ -136,27 +136,33 @@ const Login: React.FC = () => {
   //     console.log(input);
   //   }, [input]);
 
+  // ion-item::part(native) {
+  //   background-color: var(--ion-color-danger);
+  // }
+
   return (
     <IonPage>
-      <IonHeader>
+      {/* <IonHeader>
         <IonToolbar>
           <IonTitle>Login</IonTitle>
         </IonToolbar>
-      </IonHeader>
+      </IonHeader> */}
       {busy && (
         <IonLoading message="Please wait..." duration={0} isOpen={busy} />
       )}
       <IonContent className="ion-padding">
         <IonInput
+          className="input__center"
           placeholder="Username"
           onIonChange={(e: any) => setUsername(e.target.value)}
-        ></IonInput>
+        />
         <IonInput
+          className="input__center"
           type="password"
           placeholder="Password"
           onIonChange={(e: any) => setPassword(e.target.value)}
-        ></IonInput>
-        <IonButton onClick={login} expand="full">
+        />
+        <IonButton onClick={login} expand="full" className="button">
           Login
         </IonButton>
 

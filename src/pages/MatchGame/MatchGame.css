@@ -52,7 +52,7 @@
   position: absolute;
 }
 
-matchgame__match {
+.matchgame__match {
   display: flex;
   flex-direction: column;
 
@@ -65,4 +65,10 @@ matchgame__match {
   /* border: "2px solid #000"; */
   /* boxShadow: theme.shadows[5]; */
   /* padding: theme.spacing(2, 4, 3) */
+}
+
+
+.matchgame__cardContainer {
+background: red;
+background-color: red;
 }

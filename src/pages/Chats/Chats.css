@@ -22,7 +22,7 @@ a {
 }
 
 .chat__details > p {
-  color: grey;
+  color: rgb(44, 44, 44);
 }
 
 .chat__timestamp {
@@ -35,4 +35,8 @@ a {
 
 .h5 {
   color: red;
+}
+
+.h6 {
+  color: black;
 }

@@ -1,4 +1,23 @@
-.chatScreen {
+.chats__header {
+  display: flex;
+  justify-content: flex-end;  
+  /* position: relative;            */
+  background: transparent
+}
+
+.chats__header__back {
+  flex: 0 1 auto;
+  margin-right: auto;  
+}
+
+.chats__header-user {
+  flex: 0 1 auto;
+  position: absolute;        
+  left: 50%;
+  transform: translateX(-50%);
+  text-align: center;
+  margin-bottom: 15%;
+  height: 0px;
 }
 
 .chatScreen__timestamp {
@@ -36,7 +55,7 @@
   background-color: #29b3cd;
   padding: 15px;
   border-radius: 20px;
-  color: white;
+  color: rgb(0, 0, 0);
 }
 
 .chatScreen__inputField {
@@ -46,11 +65,13 @@
 }
 
 .chatScreen__inputButton {
-  border: none;
+  /* border: none;
   margin-right: 20px;
   background-color: white;
   font-weight: bolder;
-  color: #fe3d71;
+  color: #000000; */
+  border-radius: 20%;
+  width: 20%;
 }
 
 .chatScreen__input {
@@ -60,11 +81,38 @@
   position: absolute;
   bottom: 0;
   width: 100%;
-  border-top: 1px solid lightgray;
+  border-top: 1px solid rgb(0, 0, 0);
   /* height: 20vh; */
 }
 
-.scrollBar {
-  height: 80vh;
+
+
+.chatScreen__userImage {
+  /* position: relative; */
+  /* display: inline-block; */
 }
 
+.chatScreen__userImage p {
+  position: absolute;
+  width: 100%;
+  text-align: center;
+  bottom: 0;
+  left: 0;
+  top: 75%
+}
+
+
+.chatScreen__scroll {
+  margin-top: 10%;
+  margin-bottom: 15%;
+  display: flex;
+  flex-direction: column;
+  /* height: 100vh; */
+  /* flex: 1; */
+  overflow-y: scroll;
+  overflow-x: hidden;
+}
+
+/* .scrollBar {
+  height: 68vh;
+} */

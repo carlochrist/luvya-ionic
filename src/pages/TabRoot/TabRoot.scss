@@ -1,0 +1,54 @@
+// .iontab__button {
+//     color: black
+// }
+
+// .ion-tab-bar {
+//     bottom: 20px;
+//     position: relative;
+//     border-radius: 16px;
+//     width: 92%;
+//     margin: 0 auto;
+//   }
+  
+ion-tab-button{
+  font-size: 10px;
+  --background-focused: black;
+  --color-selected: black;
+  --color: rgb(78, 78, 78);
+  // --padding-end: 0px;
+  // --padding-start: 10px;
+  // --padding-bottom: 0px;
+  // --margin-left:0px;
+  // --margin-right:0px;
+  // max-width:100px;
+  ion-icon{
+      font-size: 67.5px;
+  }}
+
+  .ion-color-gold {
+    --ion-color-base: var(--ion-color-gold) !important;
+    --ion-color-base-rgb: var(--ion-color-gold-rgb) !important;
+    --ion-color-contrast: var(--ion-color-gold-contrast) !important;
+    --ion-color-contrast-rgb: var(--ion-color-gold-contrast-rgb) !important;
+    --ion-color-shade: var(--ion-color-gold-shade) !important;
+    --ion-color-tint: var(--ion-color-gold-tint) !important;
+  }
+
+//  .IonTabButton {
+//     --color: var(--ion-color-medium);
+//     --color-selected: var(--ion-color-primary);
+  
+//     &::before {
+//       background-color: black;
+//       display: block;
+//       content: "";
+//       margin: 0 auto;
+//       width: 20px;
+//       height: 2px;
+//     }
+  
+//     &.tab-selected::before {
+//       background-color: var(--ion-color-primary);
+//     }
+//   }
+

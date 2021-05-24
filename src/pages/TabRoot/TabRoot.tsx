@@ -29,6 +29,7 @@ import MatchGame from "../MatchGame/MatchGame";
 import Profile from "../Profile/Profile";
 import { IonReactRouter } from "@ionic/react-router";
 import Chats from "../Chats/Chats";
+import "./TabRoot.scss";
 
 const TabRoot: React.FC = () => {
   return (
@@ -49,17 +50,25 @@ const TabRoot: React.FC = () => {
           exact={true}
         /> */}
       </IonRouterOutlet>
-      <Profile />
+
       <IonTabBar slot="bottom">
-        <IonTabButton tab="profile" href="/main/profile">
+        <IonTabButton
+          tab="profile"
+          href="/main/profile"
+          className="iontab__button"
+        >
           <IonIcon icon={personCircle} />
           <IonLabel>Profile</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="matchgame" href="/main/matchgame">
+        <IonTabButton
+          tab="matchgame"
+          href="/main/matchgame"
+          className="iontab__button"
+        >
           <IonIcon icon={heart} />
           <IonLabel>MatchGame</IonLabel>
         </IonTabButton>
-        <IonTabButton tab="chats" href="/main/chats">
+        <IonTabButton tab="chats" href="/main/chats" className="iontab__button">
           <IonIcon icon={chatbubble} />
           <IonLabel>Chats</IonLabel>
         </IonTabButton>

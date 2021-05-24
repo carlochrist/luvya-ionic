@@ -2,13 +2,49 @@
 http://ionicframework.com/docs/theming/ */
 
 /** Ionic CSS Variables **/
+
+:root {
+
+  --ion-background-color: linear-gradient(#e66465,#9198e5);
+
+  --ion-text-color: #000000;
+  --ion-text-color-rgb: 0,0,0;
+
+  --ion-color-step-50: #d3d3d3;
+  --ion-color-step-100: #c8c8c8;
+  --ion-color-step-150: #bdbdbd;
+  --ion-color-step-200: #b2b2b2;
+  --ion-color-step-250: #a7a7a7;
+  --ion-color-step-300: #9b9b9b;
+  --ion-color-step-350: #909090;
+  --ion-color-step-400: #858585;
+  --ion-color-step-450: #7a7a7a;
+  --ion-color-step-500: #6f6f6f;
+  --ion-color-step-550: #646464;
+  --ion-color-step-600: #595959;
+  --ion-color-step-650: #4e4e4e;
+  --ion-color-step-700: #434343;
+  --ion-color-step-750: #383838;
+  --ion-color-step-800: #2c2c2c;
+  --ion-color-step-850: #212121;
+  --ion-color-step-900: #161616;
+  --ion-color-step-950: #0b0b0b;
+}
+
+.backgroundTransparent {
+  --ion-background-color: transparent;
+  --ion-color-primary: #000000;
+
+}
+
+
 :root {
   /** primary **/
-  --ion-color-primary: #3880ff;
+  --ion-color-primary: #adadad;
   --ion-color-primary-rgb: 56, 128, 255;
   --ion-color-primary-contrast: #ffffff;
   --ion-color-primary-contrast-rgb: 255, 255, 255;
-  --ion-color-primary-shade: #3171e0;
+  --ion-color-primary-shade: #b6b6b6;
   --ion-color-primary-tint: #4c8dff;
 
   /** secondary **/
@@ -59,6 +95,14 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-dark-shade: #1e2023;
   --ion-color-dark-tint: #383a3e;
 
+    /** black **/
+    --ion-color-black: #000000;
+    --ion-color-black-rgb: 34, 36, 40;
+    --ion-color-black-contrast: #ffffff;
+    --ion-color-black-contrast-rgb: 255, 255, 255;
+    --ion-color-black-shade: #17181a;
+    --ion-color-black-tint: #242527;
+
   /** medium **/
   --ion-color-medium: #92949c;
   --ion-color-medium-rgb: 146, 148, 156;
@@ -74,6 +118,14 @@ http://ionicframework.com/docs/theming/ */
   --ion-color-light-contrast-rgb: 0, 0, 0;
   --ion-color-light-shade: #d7d8da;
   --ion-color-light-tint: #f5f6f9;
+
+  /** gold **/
+  --ion-color-gold: #ffd700;
+  --ion-color-gold-rgb: 255, 215, 0;
+  --ion-color-gold-contrast: #000000;
+  --ion-color-gold-contrast-rgb: 0, 0, 0;
+  --ion-color-gold-shade: #e0bd00;
+  --ion-color-gold-tint: #ffdb1a;
 }
 
 @media (prefers-color-scheme: dark) {
