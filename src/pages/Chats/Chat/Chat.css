@@ -1,4 +1,4 @@
-.chat {
+.chat__chat {
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -17,13 +17,17 @@ a {
 }
 
 .chat__details > p {
-  color: grey;
+  /* color: grey; */
 }
 
 .chat__timestamp {
-  color: grey;
+  /* color: grey; */
 }
 
 .chat__image {
   margin-right: 20px;
+}
+
+.chat__timestamp {
+  /* margin-left: auto; */
 }

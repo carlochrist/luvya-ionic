@@ -3,18 +3,38 @@ import React from "react";
 import "./Chat.css";
 import { Link } from "react-router-dom";
 import { IonAvatar } from "@ionic/react";
+import moment from "moment";
 
-const Chat: React.FC = () => {
+interface ChatProps {
+  chat: any;
+  // user: any;
+}
+
+const Chat: React.FC<ChatProps> = ({ chat }) => {
   return (
-    <div className="chat">
-      {/* <IonAvatar className="chat__image">
-        <img src={user.pictures[0].imageUrl} />
+    <div key={chat.id} className="chat__chat">
+      <IonAvatar className="chat__image">
+        <img src={chat.pictureMatch.imageUrl} />
       </IonAvatar>
       <div className="chat__details">
-        <h2>{name}</h2>
-        <p>{message}</p>
+        <h2>{chat.nameMatch}</h2>
+        <p>{chat.messages[0]?.message}</p>
       </div>
-      <p className="chat__timestamp">{timestamp}</p> */}
+      {/* <p className="chat__timestamp">
+      {new Intl.DateTimeFormat("en-US", {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+      }).format(chat.messages[0]?.timestamp.seconds)}
+    </p> */}
+      <div className="chat__timestamp">
+        {moment(new Date(chat.messages[0]?.timestamp.seconds * 1000)).format(
+          "DD/MM/YYYY HH:MM"
+        )}
+      </div>
     </div>
   );
 };

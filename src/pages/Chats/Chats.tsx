@@ -20,13 +20,19 @@ import MatchBar from "./MatchBar/MatchBar";
 import { setUserSelectedState, setUserState } from "../../redux/actions";
 import Chat from "./Chat/Chat";
 import moment from "moment";
+import { Link } from "react-router-dom";
 
-const Chats: React.FC = () => {
+interface ChatsProps {
+  chatIsOpen: Boolean;
+}
+
+const Chats: React.FC<ChatsProps> = ({ chatIsOpen }) => {
   const user = useSelector((state: any) => state.user);
+  const userEmail = useSelector((state: any) => state.userEmail);
   const history = useHistory();
   const dispatch = useDispatch();
 
-  const [chats, setChats] = useState([]);
+  const [chats, setChats] = useState([] as any[]);
   const [matchedUsers, setMatchedUsers] = useState([]);
   const [chatOpened, setChatOpened] = useState(false);
   const [chatToOpen, setChatToOpen] = useState({});
@@ -124,6 +130,9 @@ const Chats: React.FC = () => {
 
   const logUser = () => {
     console.log(user);
+    console.log(userEmail);
+    console.log(chats);
+
     // console.log(user.chats);
     // setChats(user.chats);
 
@@ -163,150 +172,193 @@ const Chats: React.FC = () => {
   //   });
   // }, []);
 
-  // useEffect(() => {
-  //   // currentUser === user
-  //   // add chats to user
-  //   database.collection("chats").onSnapshot((snapshot) => {
-  //     snapshot.forEach((doc) => {
-  //       const chat = doc.data();
-  //       chat.id = doc.id;
-
-  //       if (chat.userEmail1 === user.email || chat.userEmail2 === user.email) {
-  //         // console.log(chat);
-
-  //         // add match-picture to chat
-  //         database.collection("users").onSnapshot((snapshot) => {
-  //           snapshot.forEach((doc) => {
-  //             const currentUserChat = {
-  //               id: doc.id,
-  //               email: doc.data().email,
-  //               pictures: [] as any[],
-  //               ...doc.data(),
-  //             };
-
-  //             let currentUserEmail =
-  //               chat.userEmail1 === user.email
-  //                 ? chat.userEmail2
-  //                 : chat.userEmail1;
-
-  //             if (currentUserEmail !== user.Email) {
-  //               database
-  //                 .collection("users")
-  //                 .doc(currentUserChat.id)
-  //                 .collection("pictures")
-  //                 .orderBy("timestamp", "asc")
-  //                 .limitToLast(1)
-  //                 .get()
-  //                 .then((response) => {
-  //                   response.forEach((document) => {
-  //                     const fetchedPicture = {
-  //                       id: document.id,
-  //                       ...document.data(),
-  //                     };
-  //                     // console.log(fetchedPicture);
-  //                     chat.pictureMatch = fetchedPicture;
-  //                     // console.log(chat);
-  //                     // fetchedPictures.push(fetchedPicture);
-  //                   });
-  //                   // currentUser.pictures = fetchedPictures;
-  //                 });
-  //             }
-  //           });
-  //         });
-
-  //         // add latest messages to chat
-  //         database
-  //           .collection("chats")
-  //           .doc(chat.id)
-  //           .collection("messages")
-  //           .orderBy("timestamp", "asc")
-  //           .limitToLast(1)
-  //           .get()
-  //           .then((response) => {
-  //             response.forEach((document) => {
-  //               const fetchedMessage = {
-  //                 id: document.id,
-  //                 ...document.data(),
-  //               };
-  //               chat.messages.push(fetchedMessage);
-  //             });
-  //           });
-
-  //         if (!user.hasOwnProperty("chats")) {
-  //           user.chats = [] as any[];
-  //         }
-
-  //         let matchedUserEmail = "";
-
-  //         if (chat.userEmail1 === user.email) {
-  //           matchedUserEmail = chat.userEmail2;
-  //         } else {
-  //           matchedUserEmail = chat.userEmail1;
-  //         }
-
-  //         if (user.chats !== undefined) {
-  //           if (
-  //             !user.chats.find(
-  //               (chat: any) =>
-  //                 chat.userEmail1 === matchedUserEmail ||
-  //                 chat.userEmail2 === matchedUserEmail
-  //             )
-  //           ) {
-  //             user.chats.push(chat);
-  //             //setChats(user.chats);
-  //           }
-  //         }
-
-  //         // console.log(user);
-  //         // dispatch(setUserState(currentUser));
-  //       }
-  //     });
-  //   });
-  // }, [user.chats]);
-
-  const openUserChat = (chat: any) => {
-    console.log(chat);
-
-    let matchedUserEmail =
-      chat.userEmail1 === user.email ? chat.userEmail2 : chat.userEmail1;
-    database.collection("users").onSnapshot((snapshot) => {
+  useEffect(() => {
+    // currentUser === user
+    // add chats to user
+    database.collection("chats").onSnapshot((snapshot) => {
       snapshot.forEach((doc) => {
-        const currentUser = {
-          id: doc.id,
-          email: doc.data().email,
-          gender: doc.data().gender,
-          pictures: [] as any[],
-          likes: doc.data().likes,
-          dislikes: doc.data().dislikes,
-          ...doc.data(),
-        };
+        const chat = doc.data();
+        chat.id = doc.id;
 
-        if (currentUser.email === matchedUserEmail) {
-          database
-            .collection("users")
-            .doc(currentUser.id)
-            .collection("pictures")
-            .get()
-            .then((response) => {
-              const fetchedPictures: any[] = [];
-              response.forEach((document) => {
-                const fetchedPicture = {
-                  id: document.id,
-                  ...document.data(),
-                };
-                fetchedPictures.push(fetchedPicture);
-              });
+        if (
+          chat.userEmail1.toLowerCase() === userEmail.email.toLowerCase() ||
+          chat.userEmail2.toLowerCase() === userEmail.email.toLowerCase()
+        ) {
+          // add match-picture to chat
+          database.collection("users").onSnapshot((snapshot) => {
+            snapshot.forEach((doc) => {
+              const currentUserChat = {
+                id: doc.id,
+                email: doc.data().email,
+                pictures: [] as any[],
+                ...doc.data(),
+              };
 
-              currentUser.pictures = fetchedPictures;
-              dispatch(setUserSelectedState(currentUser));
-            })
-            .catch((error) => {
-              // setError(error);
-              console.log(error);
+              let currentUserEmail =
+                chat.userEmail1 === userEmail.email
+                  ? chat.userEmail2
+                  : chat.userEmail1;
+
+              if (currentUserEmail !== user.Email) {
+                database
+                  .collection("users")
+                  .doc(currentUserChat.id)
+                  .collection("pictures")
+                  .orderBy("timestamp", "asc")
+                  .limitToLast(1)
+                  .get()
+                  .then((response) => {
+                    response.forEach((document) => {
+                      const fetchedPicture = {
+                        id: document.id,
+                        ...document.data(),
+                      };
+                      // console.log(fetchedPicture);
+                      chat.pictureMatch = fetchedPicture;
+                      // console.log(chat);
+                      // fetchedPictures.push(fetchedPicture);
+
+                      // if (!user.hasOwnProperty("chats")) {
+                      //   user.chats = [] as any[];
+                      // }
+
+                      // let matchedUserEmail = "";
+
+                      // if (chat.userEmail1 === user.email) {
+                      //   matchedUserEmail = chat.userEmail2;
+                      // } else {
+                      //   matchedUserEmail = chat.userEmail1;
+                      // }
+
+                      // if (user.chats !== undefined) {
+                      //   if (
+                      //     !user.chats.find(
+                      //       (chat: any) =>
+                      //         chat.userEmail1 === matchedUserEmail ||
+                      //         chat.userEmail2 === matchedUserEmail
+                      //     )
+                      //   ) {
+                      //     user.chats.push(chat);
+                      //     //setChats(user.chats);
+                      //   }
+                      // }
+
+                      // add latest messages to chat
+                      database
+                        .collection("chats")
+                        .doc(chat.id)
+                        .collection("messages")
+                        .orderBy("timestamp", "asc")
+                        // .limitToLast(1)
+                        .get()
+                        .then((response) => {
+                          response.forEach((document) => {
+                            const fetchedMessage = {
+                              id: document.id,
+                              ...document.data(),
+                            };
+                            chat.messages.push(fetchedMessage);
+
+                            // console.log(chat);
+
+                            // setUsers((oldUsers) => {
+                            //                     if (
+                            //                       oldUsers.find((user) => user.email === currentUser.email)
+                            //                     )
+                            //                       return oldUsers;
+                            //                     return [...oldUsers, currentUser];
+                            //                   });
+                            setChats((oldChats) => {
+                              if (
+                                oldChats.find(
+                                  (oldChat) =>
+                                    oldChat.userEmail1.toLowerCase() ===
+                                      currentUserEmail.toLowerCase() ||
+                                    oldChat.userEmail2.toLowerCase() ===
+                                      currentUserEmail.toLowerCase()
+                                )
+                              )
+                                return oldChats;
+                              return [...oldChats, chat];
+                            });
+                          });
+                        });
+                    });
+                  });
+              }
             });
+          });
         }
       });
     });
+    // }, [user.chats]);
+  }, [chats]);
+
+  const openUserChat = (chat: any) => {
+    // console.log(chat);
+
+    setChatToOpen(chat);
+    setChatOpened(true);
+
+    //   <ChatScreen
+    //   chat={chatToOpen}
+    //   closeChatScreen={(bool) => setChatOpened(bool)}
+    // />
+
+    //   history.replace("/main/chat", );
+
+    // history.push({
+    //   pathname: "/main/chat",
+    //   chat: chatToOpen,
+    // });
+
+    // history.push("/main/chat", { chat: chatToOpen }, {closeChatScreen: close});
+
+    // let matchedUserEmail =
+    //   chat.userEmail1 === user.email ? chat.userEmail2 : chat.userEmail1;
+    // database.collection("users").onSnapshot((snapshot) => {
+    //   snapshot.forEach((doc) => {
+    //     const currentUser = {
+    //       id: doc.id,
+    //       email: doc.data().email,
+    //       gender: doc.data().gender,
+    //       pictures: [] as any[],
+    //       likes: doc.data().likes,
+    //       dislikes: doc.data().dislikes,
+    //       ...doc.data(),
+    //     };
+
+    //     if (currentUser.email === matchedUserEmail) {
+    //       database
+    //         .collection("users")
+    //         .doc(currentUser.id)
+    //         .collection("pictures")
+    //         .get()
+    //         .then((response) => {
+    //           const fetchedPictures: any[] = [];
+    //           response.forEach((document) => {
+    //             const fetchedPicture = {
+    //               id: document.id,
+    //               ...document.data(),
+    //             };
+    //             fetchedPictures.push(fetchedPicture);
+    //           });
+
+    //           currentUser.pictures = fetchedPictures;
+    //           dispatch(setUserSelectedState(currentUser));
+    //           // history.push("/main/chats/chat");
+    //         })
+    //         .catch((error) => {
+    //           // setError(error);
+    //           console.log(error);
+    //         });
+    //     }
+    //   });
+    // });
+  };
+
+  const logChat = (chat: any) => {
+    console.log(chat);
   };
 
   const showMatchBar = () => {
@@ -322,15 +374,20 @@ const Chats: React.FC = () => {
   return (
     <IonPage>
       {/* <IonButton onClick={logUser}></IonButton> */}
-      {userSelected ? (
+      {chatOpened ? (
         <div>
-          <ChatScreen />
+          <ChatScreen
+            chat={chatToOpen}
+            closeChatScreen={(bool) => setChatOpened(bool)}
+          />
         </div>
       ) : (
         <div>
-          {/* <IonButton onClick={logUser}>log</IonButton> */}
+          <IonButton onClick={logUser}>log</IonButton>
           <h6>New Matches</h6>
-          {{ showMatchBar } ? <MatchBar /> : null}
+          {{ showMatchBar } ? (
+            <MatchBar openChat={(chat) => openUserChat(chat)} />
+          ) : null}
 
           {/* <p>{user.chats}</p> */}
 
@@ -338,7 +395,7 @@ const Chats: React.FC = () => {
             <div key={chat.id}>{chat.id && <p>{chat.id}</p>}</div>
           ))} */}
           <h6>Messages</h6>
-          {user?.chats?.map((chat: any) => {
+          {chats.map((chat: any) => {
             if (chat.messages.length > 0) {
               return (
                 <div
@@ -346,50 +403,11 @@ const Chats: React.FC = () => {
                   className="chat"
                   onClick={() => openUserChat(chat)}
                 >
-                  <IonAvatar className="chat__image">
-                    <img src={chat.pictureMatch.imageUrl} />
-                  </IonAvatar>
-                  <div className="chat__details">
-                    <h2>{chat.nameMatch}</h2>
-                    <p>{chat.messages[0]?.message}</p>
-                  </div>
-                  {/* <p className="chat__timestamp">
-                    {new Intl.DateTimeFormat("en-US", {
-                      year: "numeric",
-                      month: "2-digit",
-                      day: "2-digit",
-                      hour: "2-digit",
-                      minute: "2-digit",
-                      second: "2-digit",
-                    }).format(chat.messages[0]?.timestamp.seconds)}
-                  </p> */}
-                  {moment(
-                    new Date(chat.messages[0]?.timestamp.seconds * 1000)
-                  ).format("DD/MM/YYYY HH:MM")}
+                  <Chat chat={chat} />
                 </div>
               );
             }
           })}
-
-          {/* {user?.chats?.map((chat: any) => (
-
-<div
-  key={chat.id}
-  className="chat"
-  onClick={() => openUserChat(chat)}
->
-  <IonAvatar className="chat__image">
-    <img src={chat.pictureMatch.imageUrl} />
-  </IonAvatar>
-  <div className="chat__details">
-    <h2>{chat.nameMatch}</h2>
-    <p>{chat.messages[0]?.message}</p>
-  </div>
-  <p className="chat__timestamp">
-    {chat.messages[0]?.timestamp.seconds}
-  </p>
-</div>
-))} */}
         </div>
       )}
     </IonPage>

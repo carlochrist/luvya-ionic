@@ -3,21 +3,21 @@
 } */
 
 
-.chat {
+/* .chat {
   display: flex;
   align-items: center;
   justify-content: space-between;
   padding: 20px;
   height: 70px;
   border-bottom: 1px solid lightgrey;
-}
+} */
 
 a {
   text-decoration: none; /*no unterline */
   color: inherit;
 }
 
-.chat__details {
+/* .chat__details {
   flex: 1;
 }
 
@@ -39,4 +39,4 @@ a {
 
 .h6 {
   color: black;
-}
+} */

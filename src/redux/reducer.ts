@@ -26,6 +26,14 @@ export default function reducer(
     }
             }
 
+            case 'SET_USER_EMAIL_STATE': 
+            return {
+                ...state,
+    userEmail: {
+        email: payload
+    }
+            }
+
             case 'SET_USER_MATCHED_STATE': 
             return {
                 ...state,

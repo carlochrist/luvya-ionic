@@ -28,7 +28,11 @@ const logData = (user: any) => {
   console.log(user);
 };
 
-const MatchBar: React.FC = () => {
+interface MatchBarProps {
+  openChat(chat: any): any;
+}
+
+const MatchBar: React.FC<MatchBarProps> = ({ openChat }) => {
   // const classes = useStyles();
 
   // const setUserInChatsComponent = (clickedUser: any) => {
@@ -284,7 +288,8 @@ const MatchBar: React.FC = () => {
               marginLeft: "10px",
               marginRight: "10px",
             }}
-            onClick={() => setUserInChatsComponent(chat)}
+            // onClick={() => setUserInChatsComponent(chat)}
+            onClick={() => openChat(chat)}
           >
             {chat.messages.length == 0 && (
               <div>
